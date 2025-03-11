@@ -1,7 +1,7 @@
 class Nodo:
     def __init__(self, valor_x, valor_y):
         valor = [valor_x, valor_y] #Se pone cada nodo un array, el primer elemento es la componente x, el segundo la y y el tercero la alineacion
-        self.valor = valor
+        self.valor = valor 
         self.izquierda = None
         self.derecha = None
         self.alineacion = 0 # 0 es x, 1 es y
@@ -18,20 +18,34 @@ class ArbolBinario:
 
     def _insertar(self, nodo, valor_x, valor_y):
         #Tomando el caso de que se organice por valores de x
-        
-        ### Se toma respecto al nivel del padre.
-        if valor_x < nodo.valor[0]:
-            if nodo.izquierda is None:
-                nodo.izquierda = Nodo(valor_x, valor_y)
-            else:
-                self._insertar(nodo.izquierda, valor_x, valor_y)
-        elif valor_x > nodo.valor[0]:
-            if nodo.derecha is None:
-                nodo.derecha = Nodo(valor_x, valor_y)
-                
-            else:
-                self._insertar(nodo.derecha, valor_x, valor_y)
-        
+        #Buscamos el componente x para poder hallarlo en el arbol
+        comp_x = nodo.valor[0]
+        altura = self.nivel(comp_x) #Saca la altura
+        print(altura)
+        if (altura%2)==0: #Si es par, entonces se toma la componente en x
+            ### Se toma respecto al nivel del padre.
+            if valor_x < nodo.valor[0]:
+                if nodo.izquierda is None:
+                    nodo.izquierda = Nodo(valor_x, valor_y)
+                else:
+                    self._insertar(nodo.izquierda, valor_x, valor_y)
+            elif valor_x > nodo.valor[0]:
+                if nodo.derecha is None:
+                    nodo.derecha = Nodo(valor_x, valor_y)
+                else:
+                    self._insertar(nodo.derecha, valor_x, valor_y)
+        else: #Se toma los impares, osea la componente es y
+            ### Se toma respecto al nivel del padre.
+            if valor_y < nodo.valor[1]: #Componentes y
+                if nodo.izquierda is None:
+                    nodo.izquierda = Nodo(valor_x, valor_y)
+                else:
+                    self._insertar(nodo.izquierda, valor_x, valor_y)
+            elif valor_y > nodo.valor[1]:
+                if nodo.derecha is None:
+                    nodo.derecha = Nodo(valor_x, valor_y)
+                else:
+                    self._insertar(nodo.derecha, valor_x, valor_y)
 
     def recorrido_inorden(self):
         elementos = []
@@ -44,18 +58,19 @@ class ArbolBinario:
             elementos.append(nodo.valor)
             self._recorrido_inorden(nodo.derecha, elementos)
     
-    def nivel(self, valor_x):
-        return self._nivel(self.raiz, 0, valor_x)
+    def nivel(self, valor_x, valor_y):
+        return self._nivel(self.raiz, 0, valor_x, valor_y)
     
-    def _nivel(self, raiz, nivel, nodo):
+    def _nivel(self, raiz, nivel, nodo_x, nodo_y):
         if raiz is not None:
-            if raiz.valor[0] == nodo:
+            if raiz.valor[0] == nodo_x:
                 return nivel
             else:
-                if nodo < raiz.valor[0]: #Por izquierda
-                    return self._nivel(raiz.izquierda, nivel +1, nodo)
-                else:
-                    return self._nivel(raiz.derecha, nivel+1, nodo)
+                if nivel%2 == 0: #El actual es par entonces el padre es impar por lo que es y
+                    if nodo_y < raiz.valor[1]: #Por izquierda
+                        return self._nivel(raiz.izquierda, nivel +1, nodo_x, nodo_y)
+                    else:
+                        return self._nivel(raiz.derecha, nivel+1, nodo_x, nodo_y)
         
     def verificacion(self): #Recorrido por anchura
         cola = []
