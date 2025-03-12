@@ -20,8 +20,8 @@ class ArbolBinario:
         #Tomando el caso de que se organice por valores de x
         #Buscamos el componente x para poder hallarlo en el arbol
         comp_x = nodo.valor[0]
-        altura = self.nivel(comp_x) #Saca la altura
-        print(altura)
+        comp_y = nodo.valor[1]
+        altura = self.nivel(comp_x, comp_y) #Saca la altura
         if (altura%2)==0: #Si es par, entonces se toma la componente en x
             ### Se toma respecto al nivel del padre.
             if valor_x < nodo.valor[0]:
@@ -29,7 +29,7 @@ class ArbolBinario:
                     nodo.izquierda = Nodo(valor_x, valor_y)
                 else:
                     self._insertar(nodo.izquierda, valor_x, valor_y)
-            elif valor_x > nodo.valor[0]:
+            elif valor_x >= nodo.valor[0]:
                 if nodo.derecha is None:
                     nodo.derecha = Nodo(valor_x, valor_y)
                 else:
@@ -41,7 +41,7 @@ class ArbolBinario:
                     nodo.izquierda = Nodo(valor_x, valor_y)
                 else:
                     self._insertar(nodo.izquierda, valor_x, valor_y)
-            elif valor_y > nodo.valor[1]:
+            elif valor_y >= nodo.valor[1]:
                 if nodo.derecha is None:
                     nodo.derecha = Nodo(valor_x, valor_y)
                 else:
@@ -67,11 +67,16 @@ class ArbolBinario:
                 return nivel
             else:
                 if nivel%2 == 0: #El actual es par entonces el padre es impar por lo que es y
+                    if nodo_x < raiz.valor[0]: #Por izquierda
+                        return self._nivel(raiz.izquierda, nivel +1, nodo_x, nodo_y)
+                    else:
+                        return self._nivel(raiz.derecha, nivel+1, nodo_x, nodo_y)
+                else: # El actual es impar por lo que el padre es par, entonces es x
                     if nodo_y < raiz.valor[1]: #Por izquierda
                         return self._nivel(raiz.izquierda, nivel +1, nodo_x, nodo_y)
                     else:
                         return self._nivel(raiz.derecha, nivel+1, nodo_x, nodo_y)
-        
+                    
     def verificacion(self): #Recorrido por anchura
         cola = []
         q = self.raiz
@@ -87,13 +92,14 @@ class ArbolBinario:
             
     def alineacion(self, nodo):
         valor_x = nodo.valor[0]
-        nivel = self.nivel(valor_x) #Valor x
+        valor_y = nodo.valor[1]
+        nivel = self.nivel(valor_x, valor_y) #Valor x
         if nivel%2 == 0:
-            nodo.alineacion = "Eje x"
+            nodo.alineacion = 0
             print(nodo.valor)
             print(nodo.alineacion)
         else:
-            nodo.alineacion = "Eje y"
+            nodo.alineacion = 1
             print(nodo.valor)
             print(nodo.alineacion)
             
