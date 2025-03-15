@@ -77,31 +77,7 @@ class ArbolBinario:
                     else:
                         return self._nivel(raiz.derecha, nivel+1, nodo_x, nodo_y)
                     
-    def verificacion(self): #Recorrido por anchura
-        cola = []
-        q = self.raiz
-        cola.append(q)
-        while cola:
-            if cola[0].izquierda is not None:
-                cola.append(cola[0].izquierda)
-            if cola[0].derecha is not None:
-                cola.append(cola[0].derecha)
-            if cola:
-                self.alineacion(cola.pop(0))
-        return "Todo alineado"
-            
-    def alineacion(self, nodo):
-        valor_x = nodo.valor[0]
-        valor_y = nodo.valor[1]
-        nivel = self.nivel(valor_x, valor_y) #Valor x
-        if nivel%2 == 0:
-            nodo.alineacion = 0
-            print(nodo.valor)
-            print(nodo.alineacion)
-        else:
-            nodo.alineacion = 1
-            print(nodo.valor)
-            print(nodo.alineacion)
+
             
 if __name__ == "__main__":
     arbol = ArbolBinario()
@@ -113,7 +89,9 @@ if __name__ == "__main__":
     arbol.insertar(14,8) # y
     
     print("Recorrido inorden:", arbol.recorrido_inorden())  # Imprime: [10, 20, 30]
-    print(arbol.verificacion())
+    
+    
+
     
 ### PREGUNTAS
 # 1. El arbol esta organizado de una manera rara, como lo tomamos? Respecto al x? al y? A la suma total?
