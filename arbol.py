@@ -112,7 +112,9 @@ if __name__ == "__main__":
     arbol.insertar(14,8) # y
     
     print("Recorrido inorden:", arbol.recorrido_inorden())  # Imprime: [10, 20, 30]
-    print(arbol.verificacion())
+    
+    
+
     
 ### PREGUNTAS
 # 1. El arbol esta organizado de una manera rara, como lo tomamos? Respecto al x? al y? A la suma total?

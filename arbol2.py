@@ -49,6 +49,33 @@ class Arbol:
                             
             
 if __name__ == "__main__":
+    
+    ### FUNCIONES PROPIAS ######
+    
+    #PERMUTACIÓN
+    def es_valido_permutar(s): #Es valido
+        if len(set(s)) == len(s): #Si no estan repetidos
+            return True
+
+    def es_viable_permutar(s, n):
+        return len(s) <= n
+
+    def permutar(nums, n,  s, solucion): #nums: Array inicial, n: Tamaño array, s: Array vacio para cada solución individual, solucion: Array para las soluciones totales
+        if es_valido_permutar(s):
+            if es_viable_permutar(s, n):
+                if n == len(s):
+                    solucion.append(copy.deepcopy(s)) #Se necesita copiarlo asi, porque si no, se guarda es la referencia
+                    if math.factorial(n) == len(solucion):
+                        print(solucion)
+                        print("El tamaño es: ", len(solucion))
+                    else:
+                        for i in range(1, n+1):
+                            s.append(i)
+                            permutar(nums, n, s, solucion)
+                            s.pop()
+                            
+    ### INSERCIÓN ARBOL ###
+
     arbol = Arbol()
     arbol.insertar(5, 8) #x
     arbol.insertar(1, 13) #y
@@ -58,41 +85,11 @@ if __name__ == "__main__":
     arbol.insertar(14,8) # y
     
     print("Recorrido inorden:", arbol.recorrido_inorden())  # Imprime: [10, 20, 30]   
-            
-
-            
-            
-                if raiz.valor[0]<=x:
-                    if raiz.derecha is not None:
-                        self.insertar(raiz.derecha,x,y,altura+1)
-                    else:
-                        raiz.derecha=Nodo(x,y,altura)
-                else:
-                    pass
-                    
-           
-# Esto ya es main
-
-def es_valido_permutar(s): #Es valido
-    if len(set(s)) == len(s): #Si no estan repetidos
-        return True
     
-def es_viable_permutar(s, n):
-    return len(s) <= n
 
-def permutar(nums, n,  s, solucion): #nums: Array inicial, n: Tamaño array, s: Array vacio para cada solución individual, solucion: Array para las soluciones totales
-    if es_valido_permutar(s):
-        if es_viable_permutar(s, n):
-            if n == len(s):
-                solucion.append(copy.deepcopy(s)) #Se necesita copiarlo asi, porque si no, se guarda es la referencia
-                if math.factorial(n) == len(solucion):
-                    print(solucion)
-                    print("El tamaño es: ", len(solucion))
-                else:
-                    for i in range(1, n+1):
-                        s.append(i)
-                        permutar(nums, n, s, solucion)
-                        s.pop()
+
+            
+                            
 
                 
             
