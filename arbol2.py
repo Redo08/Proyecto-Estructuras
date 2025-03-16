@@ -46,24 +46,31 @@ class Arbol:
             print(nodo.altura)
             self._recorrido_inorden(nodo.izquierda, elementos)            
             self._recorrido_inorden(nodo.derecha, elementos)
-
- ### FUNCIONES PROPIAS ######
-                        
-#PERMUTACIÓN
-
-    def permutar(nums, s, solucion): #nums: Array inicial, s: Array vacio para cada solución individual, solucion: Array para las soluciones totales
-        if es_valido_permutar(s):
-            if es_viable_permutar(s, len(nums)):
-                if len(nums) == len(s):
-                    solucion.append(copy.deepcopy(s)) #Se necesita copiarlo asi, porque si no, se guarda es la referencia
-                    if math.factorial(len(nums)) == len(solucion):
-                        print(solucion)
-                    else:
-                        for i in range(len(nums)):
-                            s.append(i)
-                            permutar(nums, s, solucion)
-                            s.pop()
                             
+### FUNCIONES PROPIAS ######
+
+#PERMUTACIÓN
+def es_valido_permutar(s): #Es valido
+    if len(set(s)) == len(s): #Si no estan repetidos
+        return True
+def es_viable_permutar(s, n):
+    return len(s) <= n
+def permutar(nums, s, solucion): #nums: Array inicial, s: Array vacio para cada solución individual, solucion: Array para las soluciones totales
+    if es_valido_permutar(s):
+        if es_viable_permutar(s, len(nums)):
+            if len(nums) == len(s):
+                solucion.append(copy.deepcopy(s)) #Se necesita copiarlo asi, porque si no, se guarda es la referencia
+                if math.factorial(len(nums)) == len(solucion):
+                    print(solucion)
+                else:
+                    for i in range(len(nums)):
+                        s.append(i)
+                        permutar(nums, s, solucion)
+                        s.pop()
+                            
+############# MAIN ########################
+if __name__ == "__main__":
+    
     ### INSERCIÓN ARBOL ###
 
     arbol = Arbol()
@@ -74,7 +81,7 @@ class Arbol:
     arbol.insertar(11, 15) # x
     arbol.insertar(14,8) # y
     
-    print("Recorrido inorden:", arbol.recorrido_inorden())  # Imprime: [10, 20, 30]   
+    print("Recorrido inorden :", arbol.recorrido_inorden())  # Imprime: [10, 20, 30]   
     
 
 
