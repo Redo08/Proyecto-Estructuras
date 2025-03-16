@@ -81,7 +81,7 @@ if __name__ == "__main__":
     arbol.insertar(11, 15) # x
     arbol.insertar(14,8) # y
     
-    print("Recorrido inorden :", arbol.recorrido_inorden())  # Imprime: [10, 20, 30]   
+    print("Recorrido inorden:", arbol.recorrido_inorden())  # Imprime: [10, 20, 30]   
     
 
 
