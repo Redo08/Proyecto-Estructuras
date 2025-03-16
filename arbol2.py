@@ -60,18 +60,17 @@ if __name__ == "__main__":
     def es_viable_permutar(s, n):
         return len(s) <= n
 
-    def permutar(nums, n,  s, solucion): #nums: Array inicial, n: Tamaño array, s: Array vacio para cada solución individual, solucion: Array para las soluciones totales
+    def permutar(nums, s, solucion): #nums: Array inicial, s: Array vacio para cada solución individual, solucion: Array para las soluciones totales
         if es_valido_permutar(s):
-            if es_viable_permutar(s, n):
-                if n == len(s):
+            if es_viable_permutar(s, len(nums)):
+                if len(nums) == len(s):
                     solucion.append(copy.deepcopy(s)) #Se necesita copiarlo asi, porque si no, se guarda es la referencia
-                    if math.factorial(n) == len(solucion):
+                    if math.factorial(len(nums)) == len(solucion):
                         print(solucion)
-                        print("El tamaño es: ", len(solucion))
                     else:
-                        for i in range(1, n+1):
+                        for i in range(len(nums)):
                             s.append(i)
-                            permutar(nums, n, s, solucion)
+                            permutar(nums, s, solucion)
                             s.pop()
                             
     ### INSERCIÓN ARBOL ###
