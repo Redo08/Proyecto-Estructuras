@@ -20,6 +20,7 @@ lineas_v = []  # (x, y_inicio, y_fin)
 for x, y, alineacion in puntos:
     print(lineas_h)
     print(lineas_v)
+    
     if alineacion == 0:  # Línea horizontal
         x_start, x_end = min_x, max_x
         # Verificar intersección con líneas verticales
