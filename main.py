@@ -1,4 +1,4 @@
-from src.arbol import Arbol, permutar #Traemos lo hecho en arbol, La clase Arbol y la función permutar
+from models.arbol import Arbol, permutar #Traemos lo hecho en arbol, La clase Arbol y la función permutar
 from views.grafica import visualizar_arbol #Traemos la forma de visualizar los arboles
 
 #Ingreso de elementos del array
@@ -10,6 +10,7 @@ solucion = [] #Array solución
 #Llamado a permutar el array ingresado
 permutar(array, [], solucion)
 
+### SOLUCIONAR ESTO TOCA HACER QUE DEVUELVA UNA LISTA CON LAS LISTAS QUE SON UNICAS
 
 # Crear e insertar elementos en el árbol
 for i in solucion:

@@ -2,9 +2,11 @@
 from punto import Punto
 
 class Linea:
-    def __init__(self, punto, orientacion):
+    def __init__(self, punto_inicial, punto_final, punto_posicion, orientacion):
         """Inicializa una línea desde un punto con una orientación ('vertical' o 'horizontal')."""
-        self.punto = punto
+        self.punto_inicial = punto_inicial
+        self.punto_final = punto_final
+        self.punto = punto_posicion
         self.orientacion = orientacion
 
     def __repr__(self):
