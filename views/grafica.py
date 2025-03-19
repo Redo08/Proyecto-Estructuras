@@ -3,7 +3,7 @@ from src.arbol import Nodo, Arbol
 
 # Configuración de pantalla
 WIDTH, HEIGHT = 800, 600
-NODE_RADIUS = 20
+NODE_RADIUS = 35
 LINE_COLOR = (255, 255, 255)
 NODE_COLOR = (0, 102, 255)
 
