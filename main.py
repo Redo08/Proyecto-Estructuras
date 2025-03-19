@@ -22,8 +22,10 @@ for i in solucion:
         tuple(map(tuple,(arbol.recorrido_preorden()))) 
     ))
     if tamaño < len(arboles_individuales): #Verificamos si al insertar el nuevo valor, si se aumenta el tamaño, por lo que es un arbol nuevo
+        print("----------------------------------------------------")
         print("Recorrido inorden:", arbol.recorrido_inorden())  #Mostramos recorridos  
         print("Recorrido preorden:", arbol.recorrido_preorden()) 
+        print("----------------------------------------------------")
         # Visualizar el árbol con PyGame
         visualizar_arbol(arbol) #Vizualisamos el arbol
         contador +=1 #Y sumamos al contador para saber cuantos arboles en total salen (68)
