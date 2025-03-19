@@ -3,7 +3,7 @@ from src.arbol import Nodo, Arbol
 
 # Configuración de pantalla
 WIDTH, HEIGHT = 800, 600
-NODE_RADIUS = 35
+NODE_RADIUS = 30
 LINE_COLOR = (255, 255, 255)
 NODE_COLOR = (0, 102, 255)
 
@@ -23,7 +23,7 @@ def dibujar_arbol(screen, nodo, x, y, espacio_x):
     pygame.draw.circle(screen, NODE_COLOR, (x, y), NODE_RADIUS)
     font = pygame.font.Font(None, 24)
     text = font.render(str(nodo.valor), True, (255, 255, 255))
-    screen.blit(text, (x - 10, y - 10))
+    screen.blit(text, (x - 15, y - 10))
 
 def visualizar_arbol(arbol):
     """Función principal para iniciar la visualización"""
