@@ -1,32 +1,34 @@
 import math
 import copy
-class Nodo: #Creación clase Nodo
-    def __init__(self, x, y, altura):
-        self.valor=[x,y] #Aqui se hace que el valor sea una lista de numeros
-        self.izquierda=None # No tiene izquierda ni derecha
+class Nodo:                                                     #Creación clase Nodo
+    def __init__(self, x, y, altura):                           #coordenada en x, coordenada en y, y altura
+        self.valor=[x,y]                                        #Atributo valor= valor en x, valor y
+        self.izquierda=None                                     #Se inicializa izquierda y derecha en vacío
         self.derecha=None 
-        self.altura=altura # Metemos el atributo altura para que nos muestre la alineación 
-                           # En este caso, altura impar alineación x, altura par alineacion y
+        self.altura=altura                                      # altura indicara la alineación, impar sera respecto a eje x, y par respecto al eje y
+                           
                            
 class Arbol: #Creación clase Arbol
     def __init__(self):
-        self.raiz = None #Se crea el arbol
+        self.raiz = None                                        #Se crea el arbol
     def insertar(self, x,y):
         if self.raiz is None:
-            self.raiz= Nodo(x,y,1) #Se inicializa el arbol con el primer valor, y se pone altura 1, que corresponde a alineación x
+            self.raiz= Nodo(x,y,1)                              #se inicializa en árbol conn el primer valor y con una altura de 1                        
+            
         else:
-            self._insertar(self.raiz,x,y,1)  
+            self._insertar(self.raiz,x,y,1)                     #Si el arbol tiene raiz, se ingresa a insertar el nodo hijo
 
-    def _insertar(self,raiz,x,y,altura): #Ya entra a insertar los demás valores siguiendo las reglas de este arbol
+    def _insertar(self,raiz,x,y,altura):                        #Se inserta según la condición de altura, ya sea validando el valor de x si la altura es impar, y en y si es par
         if raiz is not None:
             #Si la altura es impar
             if altura %2 != 0:
-                self.validar(raiz,x,y,x,altura,1) 
+                self.validar(raiz,x,y,x,altura) 
             else: #Si la altura es par
-                self.validar(raiz,x,y,y,altura,1)
+                self.validar(raiz,x,y,y,altura)
 
-    def validar(self,raiz,x,y,a,altura,posicion): #La componente a nos ayuda a determinar respecto a su alineación, con que tenemos que validarlo, entonces si es x, lo miramos con la componente x del nodo
-        if raiz.valor[posicion]<=a: # Se mira por derecha
+    def validar(self,raiz,x,y,a,altura):               #Determina respecto a su alineación, si se valida respecto a x o y.
+                                                                #
+        if raiz.valor[1]<=a:                           # Se mira por derecha
             if raiz.derecha is not None:
                 self._insertar(raiz.derecha,x,y,altura+1)
             else:
