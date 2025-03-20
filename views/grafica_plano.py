@@ -60,7 +60,7 @@ def graficar_arbol_kd_progresivo(nodo, min_x, max_x, min_y, max_y, nivel=0):
         graficar_arbol_kd_progresivo(nodo.izquierda, min_x, x, min_y, max_y, nivel + 1)
         graficar_arbol_kd_progresivo(nodo.derecha, x, max_x, min_y, max_y, nivel + 1)
     else:
-        graficar_arbol_kd_progresivo(nodo.izquierda, min_x, max_x, min_y, y,6 nivel + 1)
+        graficar_arbol_kd_progresivo(nodo.izquierda, min_x, max_x, min_y, y, nivel + 1)
         graficar_arbol_kd_progresivo(nodo.derecha, min_x, max_x, y, max_y, nivel + 1)
 
 # Crear el árbol y agregar puntos
