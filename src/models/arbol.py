@@ -22,13 +22,13 @@ class Arbol: #Creación clase Arbol
         if raiz is not None:
             #Si la altura es impar
             if altura %2 != 0:
-                self.validar(raiz,x,y,x,altura) 
+                self.validar(raiz,x,y,x,altura,0) 
             else: #Si la altura es par
-                self.validar(raiz,x,y,y,altura)
+                self.validar(raiz,x,y,y,altura,1)
 
-    def validar(self,raiz,x,y,a,altura):               #Determina respecto a su alineación, si se valida respecto a x o y.
+    def validar(self,raiz,x,y,a,altura,posicion):                     #Determina respecto a su alineación, si se valida respecto a x o y.
                                                                 #
-        if raiz.valor[1]<=a:                           # Se mira por derecha
+        if raiz.valor[posicion]<=a:                           # Se mira por derecha
             if raiz.derecha is not None:
                 self._insertar(raiz.derecha,x,y,altura+1)
             else:

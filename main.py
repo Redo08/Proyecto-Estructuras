@@ -7,9 +7,14 @@ from src.models.arbol import Arbol
 array = [(5,8), (1,13), (10,15), (20,12), (11,15), (14,8)] #Entre archivo JSON
 
 permutaciones=Optimizador(array)
+print (permutaciones)
 conjunto=permutaciones.generar_permutaciones() #Tenemos conjunto con valores buenos
+print(len(conjunto))
+##
+#for i in conjunto:
+   #grafica_arbol.visualizar_arbol(i)
+print()
+grafica_arbol.visualizar_arbol(conjunto[8])
 
-for i in conjunto:
-    grafica_arbol.visualizar_arbol(i)
+
     
-
