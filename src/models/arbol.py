@@ -60,27 +60,6 @@ class Arbol: #Creación clase Arbol
             elementos.append(nodo.valor)
             self._recorrido_preorden(nodo.izquierda, elementos)
             self._recorrido_preorden(nodo.derecha, elementos)
-
-######## FUNCIONES PROPIAS #######
-
-#PERMUTACIÓN
-def es_valido_permutar(s): #Es valido
-    return len(set(s)) == len(s) #Si no estan repetidos
-def es_viable_permutar(s, n):
-    return len(s) <= n
-def permutar(nums, s, solucion): #nums: Array inicial, s: Array vacio para cada solución individual, solucion: Array para las soluciones totales
-    if es_valido_permutar(s):
-        if es_viable_permutar(s, len(nums)):
-            if len(nums) == len(s):
-                solucion.append(copy.deepcopy(s)) #Se necesita copiarlo asi, porque si no, se guarda es la referencia
-            if math.factorial(len(nums)) == len(solucion):
-                return True
-            else:
-                for i in range(len(nums)):
-                    s.append(nums[i]) #Se agrega cada valor de la lista
-                    if permutar(nums, s, solucion):
-                        return True
-                    s.pop()
                               
     
 
