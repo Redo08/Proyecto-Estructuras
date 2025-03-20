@@ -19,10 +19,10 @@ class Arbol: #Creación clase Arbol
 
     def _insertar(self,raiz,x,y,altura): #Ya entra a insertar los demás valores siguiendo las reglas de este arbol
         if raiz is not None:
-            #Si la altura es impar
+            #Si la altura es impar es componente x
             if altura %2 != 0:
-                self.validar(raiz,x,y,x,altura,1) 
-            else: #Si la altura es par
+                self.validar(raiz,x,y,x,altura,0) 
+            else: #Si la altura es par es componente y
                 self.validar(raiz,x,y,y,altura,1)
 
     def validar(self,raiz,x,y,a,altura,posicion): #La componente a nos ayuda a determinar respecto a su alineación, con que tenemos que validarlo, entonces si es x, lo miramos con la componente x del nodo
