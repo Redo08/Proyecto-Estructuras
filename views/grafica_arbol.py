@@ -1,5 +1,5 @@
 import pygame
-from models.arbol import Nodo, Arbol
+from src.models.arbol import Nodo, Arbol
 
 # Configuración de pantalla
 WIDTH, HEIGHT = 800, 600
