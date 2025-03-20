@@ -1,19 +1,28 @@
 class Area:
-    def __init__(self):
+    def __init__(self, limites): #Nombre String, Limites es una lista, color_fondo String, color_borde String
+        self.nombre = None
+        self.limites = limites
+        self.color_fondo = None
+        self.color_borde = None
+        self.elementos_graficos = None #Es un atributo o una nueva clase
+        self.area = None #El area del area seleccionada
+    
+    
+    def agregar_nombre(nombre):
         pass
     
-    puntos = [(2, 3, 0), (5, 7, 1), (8, 5, 0), (4, 6, 1),(7, 4, 1),(1,1,1),(3,3,1)]
-    
-    marco_x = Punto([min(p[0] for p in puntos), max(p[0] for p in puntos)]) #(min, max) x
-    marco_y = Punto([min(p[1] for p in puntos), max(p[1] for p in puntos)])# (min, max) y
-    
-    print(marco_x.posicion)
-    print(marco_y.posicion)
-    
-    def calcular_Plano(self, lista_puntos): 
+    def agregar_color_fondo(color_fondo):
         pass
+    
+    def agregar_color_borde(color_borde):
+        pass
+    
+    def agregar_elementos_graficos(): #Que ingresa? Una lista? Un objeto? 
+        pass
+    
+    
+    
 
-class Plano:
-    def __init__(self):
-        pass
+
+
     

@@ -1,14 +1,17 @@
-import math
+from src.models.arbol import Arbol
 import copy
-from src.models.arbol import Arbol #Importación al arbol
-
-class Optimizador:
-    def __init__(self,listapuntos): #Construimos el objeto, y se necesita una lista de puntos
-        self.puntos=listapuntos
-        
-    def generar_permutaciones(self): #Retorna las permutaciones unicas
+import math
+class Utils:
+    def __init__(self):
+        pass
+    
+    def generar_arbol(lista_valores): #Lista de puntos que generan arbol y retorna un objeto arbol
+        pass
+    
+    
+    def generar_permutaciones(self, lista_valores): #Retorna las permutaciones unicas
         permutaciones_all=[]
-        self.permutar(self.puntos,[],permutaciones_all) #Saca todas las permutaciones
+        self.permutar(lista_valores,[],permutaciones_all) #Saca todas las permutaciones
         return self.permutaciones_unique(permutaciones_all)
 
     def es_valido_permutar(self,solucion): #Es valido
@@ -47,6 +50,3 @@ class Optimizador:
                         
         return soluciones_unique
     
-    def generar_optimo(self):  #Para sacar el más optimo
-        pass
-               
