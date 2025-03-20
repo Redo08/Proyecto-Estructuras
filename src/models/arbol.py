@@ -26,9 +26,8 @@ class Arbol: #Creación clase Arbol
             else: #Si la altura es par es componente y
                 self.validar(raiz,x,y,y,altura,1)
 
-    def validar(self,raiz,x,y,a,altura):               #Determina respecto a su alineación, si se valida respecto a x o y.
-                                                                #
-        if raiz.valor[1]<=a:                           # Se mira por derecha
+    def validar(self,raiz,x,y,a,altura,posicion):                     #Determina respecto a su alineación, si se valida respecto a x o y.
+        if raiz.valor[posicion]<=a:                           # Se mira por derecha
             if raiz.derecha is not None:
                 self._insertar(raiz.derecha,x,y,altura+1)
             else:
