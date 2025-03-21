@@ -14,9 +14,12 @@ arboles = utils.permutaciones_unique_arbol(array)
 puntos = utils.permutaciones_unique_puntos(array)
 arbol = utils.generar_arbol(array)
 
-print(arbol.recorrido_preorden_con_orientacion())
-plano=Plano(arbol.recorrido_preorden_con_orientacion())
-plano.generar_lineas()
+print(arbol.recorrido_anchura_con_orientacion())
+recorrido_correcto = arbol.recorrido_anchura_con_orientacion()
+
+plano=Plano(recorrido_correcto)
+coordenadas_lineas = plano.generar_lineas()
+print(coordenadas_lineas)
 
 
 #print(len(arboles))
@@ -24,10 +27,10 @@ plano.generar_lineas()
 #print(puntos)
 
 
-#or i in permutaciones[0]:
+#for i in permutaciones[0]:
    #grafica_arbol.visualizar_arbol(i)
 
-grafica_arbol.visualizar_arbol(arboles[0])
+#grafica_arbol.visualizar_arbol(arboles[0])
 
 
     
