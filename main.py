@@ -2,6 +2,7 @@
 from views import grafica_arbol
 from src.models.utils import Utils
 from src.models.arbol import Arbol
+from src.models.plano import Plano
 
 #Generar Utils
 utils = Utils()
@@ -14,6 +15,9 @@ puntos = utils.permutaciones_unique_puntos(array)
 arbol = utils.generar_arbol(array)
 
 print(arbol.recorrido_preorden_con_orientacion())
+plano=Plano(arbol.recorrido_preorden_con_orientacion())
+plano.generar_lineas()
+
 
 #print(len(arboles))
 #print(len(puntos))

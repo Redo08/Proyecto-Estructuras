@@ -1,6 +1,6 @@
-from  linea import Linea, Punto
-from  arbol import Arbol
-import matplotlib.pyplot as plt
+from  src.models.linea import Linea, Punto
+from  src.models.arbol import Arbol
+#import matplotlib.pyplot as plt
 
 class Plano:
     def __init__(self, lista_puntos):
@@ -27,6 +27,7 @@ class Plano:
 
     
     def generar_lineas(self):
+        self.calcular_limites()
         lineas_h = []  # (y, x_inicio, x_fin)
         lineas_v = []  # (x, y_inicio, y_fin)
 
@@ -34,9 +35,9 @@ class Plano:
         for x, y, alineacion in self.puntos:
             print(lineas_h)
             print(lineas_v)
-            
+            type(x)
             if alineacion == 0:  # Línea horizontal
-                x
+                x_start, x_end = self.x_min, self.x_max
                 # Verificar intersección con líneas verticales
                 for lx, ly1, ly2 in lineas_v:
                     if ly1 <= y <= ly2:
@@ -45,11 +46,11 @@ class Plano:
                         if lx > x:
                             x_end = min(x_end, lx)
                 lineas_h.append((y, x_start, x_end))
-                plt.pause(1)
-                plt.plot([x_start, x_end], [y, y], color='blue', linestyle='--')
+                #plt.pause(1)
+                #plt.plot([x_start, x_end], [y, y], color='blue', linestyle='--')
                 
             else:  # Línea vertical
-                y_start, y_end = min_y, max_y
+                y_start, y_end = self.y_min, self.y_max
                 # Verificar intersección con líneas horizontales
                 for ly, lx1, lx2 in lineas_h:
                     if lx1 <= x <= lx2:
@@ -58,8 +59,10 @@ class Plano:
                         if ly > y:
                             y_end = min(y_end, ly)
                 lineas_v.append((x, y_start, y_end))
-                plt.pause(1)
-                plt.plot([x, x], [y_start, y_end], color='green', linestyle='--')
+                #plt.pause(1)
+                #plt.plot([x, x], [y_start, y_end], color='green', linestyle='--')
+        print(lineas_h)
+        print(lineas_v) 
     
     def generar_areas(self):
         pass
@@ -70,7 +73,3 @@ class Plano:
     def interseccion_lineas(self):
         pass
     
-# Para comprobar funciones
-if __name__ == '__main__':
-    plano = Plano([(5,8), (1,13), (10,15), (20,12), (11,15), (14,8)])
-    plano.calcular_limites()
