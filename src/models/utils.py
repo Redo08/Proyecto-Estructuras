@@ -5,14 +5,16 @@ class Utils:
     def __init__(self):
         pass
     
-    def generar_arbol(lista_valores): #Lista de puntos que generan arbol y retorna un objeto arbol
-        pass
+    def generar_arbol(self, lista_valores): #Lista de puntos que generan arbol y retorna un objeto arbol
+        arbol = Arbol() #Creamos el arbol
+        for i in lista_valores: #Recorremos los valores que se van a ingresar
+            arbol.insertar(i[0], i[1])
+        return arbol
     
-    
-    def generar_permutaciones(self, lista_valores): #Retorna las permutaciones unicas
+    def generar_permutaciones(self, lista_valores, clasificador): #Retorna las permutaciones unicas
         permutaciones_all=[]
         self.permutar(lista_valores,[],permutaciones_all) #Saca todas las permutaciones
-        return self.permutaciones_unique(permutaciones_all)
+        return self.permutaciones_unique(permutaciones_all, clasificador)
 
     def es_valido_permutar(self,solucion): #Es valido
         return len(set(solucion)) == len(solucion) #Si no estan repetidos
@@ -34,19 +36,31 @@ class Utils:
                             return True
                         solucion.pop() #Se elimina para hacer el backtracking
 
-    def permutaciones_unique(self,solucion): # Sacamos las permutaciones unicas (No se repite la estructura del arbol)
+  
+    def permutaciones_unique(self,solucion, clasificador): # Sacamos las permutaciones unicas (No se repite la estructura del arbol)
         arboles_individuales=set([]) # Conjunto para evitar repetidos
         soluciones_unique=[] # Array en el que se van a almacenar soluciones unicas, se retorna
         for i in solucion: #Recorremos la lista de listas
-            arbol = Arbol() #Se tiene que crear un nuevo arbol para cada uno
             tamaño = len(arboles_individuales) #Se saca el tamaño del conjunto antes de insertar el siguiente arbol
-            for j in i: # Recorremos cada conjunto de puntos de la lista
-                arbol.insertar(j[0], j[1])  #Se recorre la sublista y se sacan los valores x, y
+            
+            arbol = self.generar_arbol(i) # Generamos el arbol
+            
             arboles_individuales.add(( #Insertamos el recorrido preorden del arbol para el conjunto, asi verificamos todos los casos posibles sin repetición 
                 tuple(map(tuple,(arbol.recorrido_preorden()))) 
             ))
-            if tamaño < len(arboles_individuales): #Verificamos si al insertar el nuevo valor, si se aumenta el tamaño, por lo que es un arbol nuevo
-                soluciones_unique.append(copy.deepcopy(arbol))   #Vamos anexando soluciones ##PREGUNTA, MANDAMOS EL ARBOL O LA LISTA DE PUNTOS
-                        
+            
+            if tamaño < len(arboles_individuales):  #Verificamos si al insertar el nuevo valor, si se aumenta el tamaño, por lo que es un arbol nuevo
+                if clasificador == 0: #Arbol
+                    soluciones_unique.append(copy.deepcopy(arbol))   #Vamos anexando soluciones ##PREGUNTA, MANDAMOS EL ARBOL O LA LISTA DE PUNTOS
+                else: #Lista de puntos
+                    soluciones_unique.append(copy.deepcopy(i))
+                    
         return soluciones_unique
     
+    # Permutaciones_unique que retorna arboles
+    def permutaciones_unique_arbol(self, solucion_unicas_arboles):
+        return self.generar_permutaciones(solucion_unicas_arboles, 0)
+    
+    # Permutaciones_unique que retorna lista de valores
+    def permutaciones_unique_puntos(self, solucion_unicas_puntos):
+        return self.generar_permutaciones(solucion_unicas_puntos, 1)
