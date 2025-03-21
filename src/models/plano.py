@@ -20,10 +20,10 @@ class Plano:
         marco_x = Punto([0, max(p[0] for p in self.puntos) + 1]) #(min, max) x
         marco_y = Punto([0, max(p[1] for p in self.puntos) + 1])# (min, max) y 
         
-        self.x_min = marco_x[0]
-        self.x_max = marco_x[1]
-        self.y_min = marco_y[0]
-        self.y_max = marco_y[1]
+        self.x_min = marco_x.posicion[0]
+        self.x_max = marco_x.posicion[1]
+        self.y_min = marco_y.posicion[0]
+        self.y_max = marco_y.posicion[1]
 
     
     def generar_lineas(self):
