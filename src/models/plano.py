@@ -18,9 +18,13 @@ class Plano:
     
         # El marco en realidad el minimo siempre seria 0
         marco_x = Punto([0, max(p[0] for p in self.puntos) + 1]) #(min, max) x
-        marco_y = Punto([0, max(p[1] for p in self.puntos) + 1])# (min, max) y
-        print(marco_x.posicion)
-        print(marco_y.posicion)
+        marco_y = Punto([0, max(p[1] for p in self.puntos) + 1])# (min, max) y 
+        
+        self.x_min = marco_x[0]
+        self.x_max = marco_x[1]
+        self.y_min = marco_y[0]
+        self.y_max = marco_y[1]
+
     
     def generar_lineas(self):
         arbol
