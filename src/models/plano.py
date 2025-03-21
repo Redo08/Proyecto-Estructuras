@@ -1,3 +1,5 @@
+from  linea import Linea, Punto
+
 class Plano:
     def __init__(self, lista_puntos):
         self.x_min = None
@@ -11,12 +13,12 @@ class Plano:
     def calcular_limites(self): 
         # puntos = [(2, 3, 0), (5, 7, 1), (8, 5, 0), (4, 6, 1),(7, 4, 1),(1,1,1),(3,3,1)]
 
-        marco_x = Punto([min(p[0] for p in puntos), max(p[0] for p in puntos)]) #(min, max) x
-        marco_y = Punto([min(p[1] for p in puntos), max(p[1] for p in puntos)])# (min, max) y
-
+    
+        # El marco en realidad el minimo siempre seria 0
+        marco_x = Punto([0, max(p[0] for p in self.puntos) + 1]) #(min, max) x
+        marco_y = Punto([0, max(p[1] for p in self.puntos) + 1])# (min, max) y
         print(marco_x.posicion)
         print(marco_y.posicion)
-        pass
     
     def generar_lineas(self):
         pass
@@ -29,3 +31,8 @@ class Plano:
     
     def interseccion_lineas(self):
         pass
+    
+# Para comprobar funciones
+if __name__ == '__main__':
+    plano = Plano([(5,8), (1,13), (10,15), (20,12), (11,15), (14,8)])
+    plano.calcular_limites()
