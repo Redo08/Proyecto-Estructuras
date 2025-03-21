@@ -1,4 +1,6 @@
 from  linea import Linea, Punto
+from  arbol import Arbol
+import matplotlib.pyplot as plt
 
 class Plano:
     def __init__(self, lista_puntos):
@@ -21,7 +23,7 @@ class Plano:
         print(marco_y.posicion)
     
     def generar_lineas(self):
-        pass
+        arbol
     
     def generar_areas(self):
         pass

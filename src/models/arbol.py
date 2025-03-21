@@ -60,6 +60,21 @@ class Arbol: #Creación clase Arbol
             elementos.append(nodo.valor)
             self._recorrido_preorden(nodo.izquierda, elementos)
             self._recorrido_preorden(nodo.derecha, elementos)
+    
+    def recorrido_preorden_con_orientacion(self):
+        elementos = []
+        self._recorrido_preorden_con_orientacion(self.raiz, elementos)
+        return elementos
+    
+    def _recorrido_preorden_con_orientacion(self,raiz, elementos):
+        if raiz is not None:
+           
+            if raiz.altura % 2 != 0:
+                elementos.append([raiz.valor[0],raiz.valor[1],0]) #0 es x
+            else:
+                elementos.append([raiz.valor[0],raiz.valor[1],1]) #0 es x
+            self._recorrido_preorden_con_orientacion(raiz.izquierda, elementos)
+            self._recorrido_preorden_con_orientacion(raiz.derecha, elementos)
                               
     
 

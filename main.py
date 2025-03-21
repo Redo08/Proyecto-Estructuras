@@ -11,10 +11,13 @@ array = [(5,8), (1,13), (10,15), (20,12), (11,15), (14,8)] #Entre archivo JSON
 
 arboles = utils.permutaciones_unique_arbol(array)
 puntos = utils.permutaciones_unique_puntos(array)
+arbol = utils.generar_arbol(array)
 
-print(len(arboles))
-print(len(puntos))
-print(puntos)
+print(arbol.recorrido_preorden_con_orientacion())
+
+#print(len(arboles))
+#print(len(puntos))
+#print(puntos)
 
 
 #or i in permutaciones[0]:
