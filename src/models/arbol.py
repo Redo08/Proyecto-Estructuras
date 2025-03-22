@@ -76,11 +76,19 @@ class Arbol: #Creación clase Arbol
             self._recorrido_preorden_con_orientacion(raiz.izquierda, elementos)
             self._recorrido_preorden_con_orientacion(raiz.derecha, elementos)
                               
+    def recorrido_anchura_con_orientacion(self):
+        resultado = []
+        if self.raiz is not None: 
+            elementos = [self.raiz]
+            while elementos:
+                nodo = elementos.pop(0)
+                if nodo.izquierda is not None:
+                    elementos.append(nodo.izquierda)
+                if nodo.derecha is not None:
+                    elementos.append(nodo.derecha)
+                    
+                resultado.append([nodo.valor[0], nodo.valor[1], 1 if nodo.altura%2 == 0 else 0 ]) #If para verificar si es par se le asigna 1, o impar 0
+            
+        return resultado
     
-
-
-            
                             
-
-                
-            
