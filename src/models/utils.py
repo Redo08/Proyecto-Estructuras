@@ -64,3 +64,7 @@ class Utils:
     # Permutaciones_unique que retorna lista de valores
     def permutaciones_unique_puntos(self, solucion_unicas_puntos):
         return self.generar_permutaciones(solucion_unicas_puntos, 1)
+    def cargar_datos_json (self, ruta_archivo):
+        pass
+    def validar_puntos_usuario(self, puntos):
+        pass

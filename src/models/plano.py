@@ -1,6 +1,6 @@
 from  src.models.linea import Linea, Punto
 from  src.models.arbol import Arbol
-#import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 class Plano:
     def __init__(self, lista_puntos):
@@ -45,9 +45,9 @@ class Plano:
                             x_start = max(x_start, lx)
                         if lx > x:
                             x_end = min(x_end, lx)
-                lineas_h.append((y, x_start, x_end))
-                #plt.pause(1)
-                #plt.plot([x_start, x_end], [y, y], color='blue', linestyle='--')
+                lineas_h.append(((x,y), (x,x_start), (x,x_end)))
+                plt.pause(1)
+                plt.plot([x_start, x_end], [y, y], color='blue', linestyle='--')
                 
             else:  # Línea vertical
                 y_start, y_end = self.y_min, self.y_max
@@ -59,8 +59,8 @@ class Plano:
                         if ly > y:
                             y_end = min(y_end, ly)
                 lineas_v.append((x, y_start, y_end))
-                #plt.pause(1)
-                #plt.plot([x, x], [y_start, y_end], color='green', linestyle='--')
+                plt.pause(1)
+                plt.plot([x, x], [y_start, y_end], color='green', linestyle='--')
         print(lineas_h)
         print(lineas_v) 
     

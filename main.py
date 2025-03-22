@@ -1,33 +1,43 @@
-##from src.arbol import Arbol #Traemos lo hecho en arbol, La clase Arbol y la función permutar
-from views import grafica_arbol
+# main.py
+from views.interfaz import Interface  # Asegúrate del nombre correcto
 from src.models.utils import Utils
-from src.models.arbol import Arbol
 from src.models.plano import Plano
+import pygame
 
-#Generar Utils
-utils = Utils()
+if __name__ == "__main__":
+    pygame.init()
+    screen_width = 800
+    screen_height = 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("Creador de Planos")
 
-#Ingreso de elementos del arra y
-array = [(5,8), (1,13), (10,15), (20,12), (11,15), (14,8)] #Entre archivo JSON
+    interfaz = Interface()  # Inicializamos la interfaz
 
-arboles = utils.permutaciones_unique_arbol(array)
-puntos = utils.permutaciones_unique_puntos(array)
-arbol = utils.generar_arbol(array)
+    running = True
+    trees_loaded = False  # Bandera para controlar si los árboles ya se cargaron
 
-print(arbol.recorrido_preorden_con_orientacion())
-plano=Plano(arbol.recorrido_preorden_con_orientacion())
-plano.generar_lineas()
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            interfaz.handle_input(event)
 
+            # Ejemplo de cómo podrías generar los árboles después de ingresar los puntos
+            if event.type == pygame.KEYDOWN:  # Puedes usar otro evento o condición
+                if event.key == pygame.K_SPACE and not trees_loaded: # Ejemplo: al presionar ESPACIO
+                    lista_de_puntos = interfaz.get_points()
+                    print("\nLista de puntos obtenida desde la interfaz:")
+                    for punto in lista_de_puntos:
+                        print(punto)
 
-#print(len(arboles))
-#print(len(puntos))
-#print(puntos)
+                    utils = Utils()
+                    arboles = utils.permutaciones_unique_arbol(lista_de_puntos)
 
+                    # Envía la lista de árboles a la interfaz usando el método cargar_y_graficar_arboles
+                    interfaz.cargar_y_graficar_arboles(arboles)
+                    trees_loaded = True
+                    print("\nLista de árboles enviada a la interfaz.")
 
-#or i in permutaciones[0]:
-   #grafica_arbol.visualizar_arbol(i)
+        interfaz.draw()
 
-grafica_arbol.visualizar_arbol(arboles[0])
-
-
-    
+    pygame.quit()
