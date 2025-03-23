@@ -5,7 +5,7 @@ from src.models.plano import Plano
 from src.models.arbol import Arbol
 import pygame
 
-if __name__ == "__main__":
+if __name__ == "_main_":
     pygame.init()
     screen_width = 800
     screen_height = 600
@@ -44,3 +44,4 @@ if __name__ == "__main__":
         interfaz.draw()
 
     pygame.quit()
+    

@@ -25,22 +25,3 @@ def dibujar_arbol(screen, nodo, x, y, espacio_x):
     font = pygame.font.Font(None, 18)
     text = font.render(str(nodo.valor), True, (255, 255, 255))
     screen.blit(text, (x - 15, y - 10))
-
-#def visualizar_arbol(arbol):
-#    """Función principal para iniciar la visualización"""
-#    pygame.init()
-#    screen = pygame.display.set_mode((WIDTH, HEIGHT))
-#    pygame.display.set_caption("Árbol KD")
-
-#    running = True
-#    while running:
-#        screen.fill((0, 0, 0))  # Fondo negro
-#        dibujar_arbol(screen, arbol.raiz, WIDTH // 2, 50, WIDTH // 4)
-
-#        pygame.display.flip()
-    
-#        for event in pygame.event.get():
-#            if event.type == pygame.QUIT:
-#                running = False
-
-#    pygame.quit()

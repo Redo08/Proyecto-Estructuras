@@ -1,4 +1,5 @@
 from src.models.arbol import Arbol
+from src.models.plano import Plano
 import copy
 import math
 class Utils:
@@ -45,9 +46,7 @@ class Utils:
             
             arbol = self.generar_arbol(i) # Generamos el arbol
             
-            arboles_individuales.add(( #Insertamos el recorrido preorden del arbol para el conjunto, asi verificamos todos los casos posibles sin repetición 
-                tuple(map(tuple,(arbol.recorrido_preorden()))) 
-            ))
+            arboles_individuales.add(str(arbol.recorrido_preorden())) #Insertamos el recorrido preorden del arbol para el conjunto, asi verificamos todos los casos posibles sin repetición 
             
             if tamaño < len(arboles_individuales):  #Verificamos si al insertar el nuevo valor, si se aumenta el tamaño, por lo que es un arbol nuevo
                 if clasificador == 0: #Arbol
@@ -64,7 +63,30 @@ class Utils:
     # Permutaciones_unique que retorna lista de valores
     def permutaciones_unique_puntos(self, solucion_unicas_puntos):
         return self.generar_permutaciones(solucion_unicas_puntos, 1)
-    def cargar_datos_json (self, ruta_archivo):
-        pass
-    def validar_puntos_usuario(self, puntos):
-        pass
+    
+    
+    def areas_optimas(self, listas_permutaciones_unique): # Lista de arboles únicos 
+        area = []
+        arbol_optimo = None
+        for i in listas_permutaciones_unique:
+            arbol = self.generar_arbol(i) #Insertamos los valores al arbol
+            
+            puntos_ordenados = arbol.recorrido_anchura_con_orientacion()
+            
+            plano = Plano(puntos_ordenados) #Creamos el plano
+            
+            lista_vertical, lista_horizontal = plano.generar_lineas()
+            
+            posibles_areas = plano.puntos_areas(lista_vertical, lista_horizontal)
+            print("--------------------------------------------")
+            print("Permutacion correspondiente", i)
+            print("Areas posibles: ",posibles_areas)
+            print("Tamaño areas posibles: ", len(posibles_areas))
+            print("-------------------------------------------")
+            if not area or len(posibles_areas) < len(area):
+                area = posibles_areas
+                arbol_optimo = arbol
+            
+        print("El arbol optimo es:", arbol_optimo)
+        print("El area final es:", area, "Con tamaño", len(area)) 
+        return arbol_optimo, area
