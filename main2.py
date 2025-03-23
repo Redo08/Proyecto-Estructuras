@@ -19,7 +19,7 @@ arbol = utils.generar_arbol(array)
 print(arbol.recorrido_preorden_con_orientacion())
 plano=Plano(arbol.recorrido_preorden_con_orientacion())
 
-# plano.generar_lineas()
+plano.generar_lineas()
 
 
 
@@ -32,8 +32,14 @@ plano=Plano(arbol.recorrido_preorden_con_orientacion())
    #grafica_arbol.visualizar_arbol(i)
 
 #grafica_arbol.visualizar_arbol(arboles[0])
-interfaz = InterfazArboles() # Instancia la InterfazArboles
-interfaz.arboles = arboles
+#interfaz = InterfazArboles() # Instancia la InterfazArboles
+#interfaz.arboles = arboles
 
 
     
+#print(arbol.recorrido_anchura_con_orientacion())
+recorrido_correcto = arbol.recorrido_anchura_con_orientacion()
+
+#plano=Plano(recorrido_correcto)
+#coordenadas_lineas = plano.generar_lineas()
+#print(coordenadas_lineas)

@@ -2,6 +2,7 @@
 from views.interfaz import Interface  # Asegúrate del nombre correcto
 from src.models.utils import Utils
 from src.models.plano import Plano
+from src.models.arbol import Arbol
 import pygame
 
 if __name__ == "__main__":
@@ -37,6 +38,8 @@ if __name__ == "__main__":
                     interfaz.cargar_y_graficar_arboles(arboles)
                     trees_loaded = True
                     print("\nLista de árboles enviada a la interfaz.")
+                    print(Arbol.recorrido_anchura_con_orientacion())
+                    recorrido_correcto = Arbol.recorrido_anchura_con_orientacion()
 
         interfaz.draw()
 

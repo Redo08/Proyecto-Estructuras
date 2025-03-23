@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 # Datos de ejemplo: (x, y, alineacion)
-puntos = [(5, 8, 0), (1, 13, 1), (10, 15, 1), (20, 12, 0),(11, 15, 0),(14,8,1)]
+puntos = [(1, 13, 1), (5,8,0), (10, 15,1), (11,15,0),(20,12,1),(14,8,0)]
 
 # Extraer límites del plano
 min_x = min(p[0] for p in puntos)
