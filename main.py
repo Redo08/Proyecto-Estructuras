@@ -1,58 +1,47 @@
-##from src.arbol import Arbol #Traemos lo hecho en arbol, La clase Arbol y la función permutar
-from views import grafica_arbol
+# main.py
+from views.interfaz import Interface  # Asegúrate del nombre correcto
 from src.models.utils import Utils
-from src.models.arbol import Arbol
 from src.models.plano import Plano
+from src.models.arbol import Arbol
+import pygame
 
-#Generar Utils
-utils = Utils()
+if __name__ == "_main_":
+    pygame.init()
+    screen_width = 800
+    screen_height = 600
+    screen = pygame.display.set_mode((screen_width, screen_height))
+    pygame.display.set_caption("Creador de Planos")
 
-#Ingreso de elementos del arra y
-array = [(5,8), (1,13), (10,15), (20,12), (11,15), (14,8)] #Entre archivo JSON
+    interfaz = Interface()  # Inicializamos la interfaz
 
+    running = True
+    trees_loaded = False  # Bandera para controlar si los árboles ya se cargaron
 
-arboles = utils.permutaciones_unique_arbol(array)
-puntos = utils.permutaciones_unique_puntos(array)
-arbol = utils.generar_arbol(array)
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            interfaz.handle_input(event)
 
-print(arbol.recorrido_anchura_con_orientacion())
-recorrido_correcto = arbol.recorrido_anchura_con_orientacion()
+            # Ejemplo de cómo podrías generar los árboles después de ingresar los puntos
+            if event.type == pygame.KEYDOWN:  # Puedes usar otro evento o condición
+                if event.key == pygame.K_SPACE and not trees_loaded: # Ejemplo: al presionar ESPACIO
+                    lista_de_puntos = interfaz.get_points()
+                    print("\nLista de puntos obtenida desde la interfaz:")
+                    for punto in lista_de_puntos:
+                        print(punto)
 
-#plano=Plano(recorrido_correcto)
-#coordenadas_lineas, lineas_verticales, lineas_horizontales = plano.generar_lineas()
-# print(coordenadas_lineas)
-# print("----------------------------------------")
-# print("Lineas verticales", lineas_verticales)
-# print("----------------------------------------")
-# print("Lineas horizontales", lineas_horizontales)
-# print("Puntos intersección!")
-# print(plano.puntos_areas(lineas_verticales, lineas_horizontales))
-# print(len(plano.puntos_areas(lineas_verticales, lineas_horizontales)))
+                    utils = Utils()
+                    arboles = utils.permutaciones_unique_arbol(lista_de_puntos)
 
-arbol_optimo, area_optima = utils.areas_optimas(puntos)
+                    # Envía la lista de árboles a la interfaz usando el método cargar_y_graficar_arboles
+                    interfaz.cargar_y_graficar_arboles(arboles)
+                    trees_loaded = True
+                    print("\nLista de árboles enviada a la interfaz.")
+                    print(Arbol.recorrido_anchura_con_orientacion())
+                    recorrido_correcto = Arbol.recorrido_anchura_con_orientacion()
 
-print(arbol_optimo.recorrido_anchura_con_orientacion())
-plano = Plano(arbol_optimo.recorrido_anchura_con_orientacion())
-lineas_verticales, lineas_horizontales = plano.generar_lineas()
+        interfaz.draw()
 
-print(plano.lineas)
-
-# for i in coordenadas_lineas:
-#    for j in coordenadas_lineas:
-#       print(i[0])
-#       print(j[0])
-#       print(plano.distancia_entre_puntos(i[0], j[0]))
-
-
-#print(len(arboles))
-#print(len(puntos))
-#print(puntos)
-
-
-#for i in permutaciones[0]:
-   #grafica_arbol.visualizar_arbol(i)
-
-grafica_arbol.visualizar_arbol(arbol_optimo)
-
-
+    pygame.quit()
     
