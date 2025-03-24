@@ -5,11 +5,13 @@ import json
 import pygame
 import os 
 import ast  # Para evaluar la cadena como una lista
+from src.models.utils import Utils
 from src.models.arbol import Nodo, Arbol
 from views.grafica_arbol import dibujar_arbol
 class Interface:
     def __init__(self,tree_list=None):
         pygame.init()
+        
         self.screen_width = 1000
         self.screen_height = 768
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
@@ -34,6 +36,8 @@ class Interface:
         self.load_json_button_text = self.font.render("Cargar JSON", True, self.white)
         self.load_json_button_text_rect = self.load_json_button_text.get_rect(center=self.load_json_button_rect.center)
 
+        # Nuevo botón para sacar el area otpima
+        #self.load_json_button_rect = pygame.Rect()
 
         # Nueva sección para los árboles
         self.tree_list = tree_list if tree_list is not None else []
@@ -61,7 +65,12 @@ class Interface:
         # Nueva sección para la cuadrícula (parte derecha)
         self.grid_section_rect=pygame.Rect(self.screen_width//2+20,150,self.screen_width//2-40,400)
         
-        
+        # Botón para calcular el area optima
+        self.area_optima_button_rect = pygame.Rect(self.grid_section_rect.left, self.grid_section_rect.bottom + 20, 150, 30)
+        self.area_optima_button_text = self.font.render("Área Óptima", True, self.white)
+        self.area_optima_button_text_rect = self.area_optima_button_text.get_rect(center=self.area_optima_button_rect.center)
+
+
         # Atributos para almacenar los límites del plano
         self.x_min = None
         self.x_max = None
@@ -115,8 +124,14 @@ class Interface:
         # Aquí podrías calcular los límites del plano basándote en las líneas del primer árbol
         
         pygame.display.flip() # Fuerza una actualización de la pantalla inmediatamente
+        
 
+    def cargar_mas_optimo(self, arbol_optimo, lineas_optimas):
+        self.set_tree_list(arbol_optimo, lineas_optimas)
+        pygame.display.flip()
+        
     def handle_input(self, event):
+        utils = Utils()
         if event.type == pygame.MOUSEBUTTONDOWN:
             if self.input_rect_list.collidepoint(event.pos):
                 self.input_active_list = True
@@ -127,7 +142,11 @@ class Interface:
                 self.process_point_list()
             elif self.load_json_button_rect.collidepoint(event.pos):
                 self.cargar_json_dialog() # Usar el texto del campo de entrada como ruta
+            elif self.area_optima_button_rect.collidepoint(event.pos):
+                pass
+                # self.cargar_mas_optimo(self)
 
+                
             # Manejo de los botones de navegación de árboles (sin cambios)
             if self.first_button_rect.collidepoint(event.pos):
                 self.current_tree_index = 0
@@ -140,6 +159,8 @@ class Interface:
             elif self.last_button_rect.collidepoint(event.pos):
                 if self.tree_list:
                     self.current_tree_index = len(self.tree_list) - 1
+            elif self.area_optima_button_rect.collidepoint(event.pos):
+                print("Oprimida")
 
         if event.type == pygame.KEYDOWN:
             if self.input_active_list:
@@ -348,6 +369,11 @@ class Interface:
         pygame.draw.rect(self.screen, self.blue, self.last_button_rect)
         pygame.draw.rect(self.screen, self.black, self.last_button_rect, 2)
         self.screen.blit(self.last_button_text, (self.last_button_rect.x + 10, self.last_button_rect.y + 5))
+        
+        # Dibujar botón de Área Óptima
+        pygame.draw.rect(self.screen, self.blue, self.area_optima_button_rect)
+        pygame.draw.rect(self.screen, self.black, self.area_optima_button_rect, 2)
+        self.screen.blit(self.area_optima_button_text, self.area_optima_button_text_rect)
         
         # Sección derecha para la cuadrícula
         #print(f"Índice del árbol actual: {self.current_tree_index}")

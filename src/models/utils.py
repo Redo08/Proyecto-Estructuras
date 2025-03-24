@@ -69,6 +69,8 @@ class Utils:
     def areas_optimas(self, listas_permutaciones_unique): # Lista de arboles únicos 
         area = []
         arbol_optimo = None
+        index_final = 0
+        index = 0
         for i in listas_permutaciones_unique:
             arbol = self.generar_arbol(i) #Insertamos los valores al arbol
             
@@ -87,10 +89,11 @@ class Utils:
             if not area or len(posibles_areas) < len(area):
                 area = posibles_areas
                 arbol_optimo = arbol
-            
+                index_final = index
+            index +=1
         print("El arbol optimo es:", arbol_optimo)
         print("El area final es:", area, "Con tamaño", len(area)) 
-        return arbol_optimo, area
+        return index_final
     
     def generar_todas_las_lineas_por_arbol(self, lista_de_arboles):
         """

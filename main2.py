@@ -31,12 +31,14 @@ print(recorrido_correcto)
 # print("Puntos intersección!")
 # print(plano.puntos_areas(lineas_verticales, lineas_horizontales))
 # print(len(plano.puntos_areas(lineas_verticales, lineas_horizontales)))
+index = utils.areas_optimas(puntos)
 
-arbol_optimo, area_optima = utils.areas_optimas(puntos)
-
-print(arbol_optimo.recorrido_anchura_con_orientacion())
-plano = Plano(arbol_optimo.recorrido_anchura_con_orientacion())
-lineas_verticales, lineas_horizontales = plano.generar_lineas()
+print(index)
+# print("Lineas optimas",lineas_optimas)
+# print("Puntos optimos",puntos_optimos)
+# print(arbol_optimo.recorrido_anchura_con_orientacion())
+# plano = Plano(arbol_optimo.recorrido_anchura_con_orientacion())
+# lineas_verticales, lineas_horizontales = plano.generar_lineas()
 
 
 # for i in coordenadas_lineas:
@@ -54,4 +56,4 @@ lineas_verticales, lineas_horizontales = plano.generar_lineas()
 #for i in permutaciones[0]:
    #grafica_arbol.visualizar_arbol(i)
 
-grafica_arbol.visualizar_arbol(arbol_optimo)
+#grafica_arbol.visualizar_arbol(arbol_optimo)
