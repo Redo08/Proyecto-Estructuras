@@ -30,18 +30,33 @@ if __name__ == "__main__":
                     print("\nLista de puntos obtenida desde la interfaz:")
                     for punto in lista_de_puntos:
                         print(punto)
+                    #Calcular los límites del plano inicial con la lista de puntos
+                    
+                    plano=Plano(lista_de_puntos)
+                    plano.calcular_limites()
+                    
+                    x_min_plano = plano.x_min
+                    x_max_plano = plano.x_max
+                    y_min_plano = plano.y_min
+                    y_max_plano = plano.y_max
+                    print(f"\nLímites iniciales del plano: x_min={x_min_plano}, x_max={x_max_plano}, y_min={y_min_plano}, y_max={y_max_plano}")
 
+                # Enviar los límites a la interfaz para configurar la gráfica y la cuadrícula
+                    interfaz.establecer_limites_plano(x_min_plano, x_max_plano, y_min_plano, y_max_plano)
                     utils = Utils()
+
                     arboles = utils.permutaciones_unique_arbol(lista_de_puntos)
-
+                    lineas=utils.generar_todas_las_lineas_por_arbol(arboles)
+                    print("Las lineas son", lineas)
                     # Envía la lista de árboles a la interfaz usando el método cargar_y_graficar_arboles
-                    interfaz.cargar_y_graficar_arboles(arboles)
+                    interfaz.cargar_y_graficar_arboles(arboles,lineas)
                     trees_loaded = True
-                    print("\nLista de árboles enviada a la interfaz.")
-                    print(Arbol.recorrido_anchura_con_orientacion())
-                    recorrido_correcto = Arbol.recorrido_anchura_con_orientacion()
+                    print(f"\nSe generaron {len(arboles)} árboles únicos con sus líneas.")
+                    #print(Arbol.recorrido_anchura_con_orientacion())
+                    #recorrido_correcto = Arbol.recorrido_anchura_con_orientacion()
+                    
 
-        interfaz.draw()
+            interfaz.draw()
 
     pygame.quit()
     

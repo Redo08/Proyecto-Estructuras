@@ -4,6 +4,7 @@ import copy
 import math
 class Utils:
     def __init__(self):
+        
         pass
     
     def generar_arbol(self, lista_valores): #Lista de puntos que generan arbol y retorna un objeto arbol
@@ -90,3 +91,18 @@ class Utils:
         print("El arbol optimo es:", arbol_optimo)
         print("El area final es:", area, "Con tamaño", len(area)) 
         return arbol_optimo, area
+    
+    def generar_todas_las_lineas_por_arbol(self, lista_de_arboles):
+        """
+        Genera una lista de listas de líneas, donde cada lista de líneas corresponde
+        a un conjunto de puntos (que representa un árbol único).
+        """
+        
+        todas_las_lineas =[]
+        for arbol in lista_de_arboles:
+            puntos_arbol = arbol.recorrido_anchura_con_orientacion() # Ajusta esto según el método correcto en tu clase Arbol
+
+            plano = Plano(list(puntos_arbol)) # Crear una instancia de Plano para cada conjunto de puntos
+            plano.generar_lineas() # Generar las líneas para este conjunto de puntos
+            todas_las_lineas.append(plano.lineas) # Guarda las líneas generadas para este conjunto de puntos
+        return todas_las_lineas

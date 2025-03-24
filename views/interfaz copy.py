@@ -56,9 +56,9 @@ class Interface2:
         self.tree_list = new_tree_list
         self.current_tree_index = 0 
 
-    def cargar_y_graficar_arboles(self, lista_de_arboles):
+    def cargar_y_graficar_arboles(self, lista_de_arboles, lista_de_lineas):
         """Carga la lista de árboles y fuerza un redibujado."""
-        self.set_tree_list(lista_de_arboles)
+        self.set_tree_list(lista_de_arboles, liesta_de_lineas)
         pygame.display.flip() # Fuerza una actualización de la pantalla inmediatamente
 
     def handle_input(self, event):
