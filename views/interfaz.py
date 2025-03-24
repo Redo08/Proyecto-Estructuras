@@ -65,12 +65,6 @@ class Interface:
         self.points_display_rect = pygame.Rect(20, self.add_button_rect.bottom + 20, self.screen_width - 40, self.input_rect_list.height) # Debajo del botón, con espacio, toma las medidas de la caja donde se ingresan los datos
         # Nueva sección para la cuadrícula (parte derecha)
         self.grid_section_rect=pygame.Rect(self.screen_width//2+20,150,self.screen_width//2-40,400)
-        
-        # Botón para calcular el area optima
-        self.area_optima_button_rect = pygame.Rect(self.grid_section_rect.left, self.grid_section_rect.bottom + 20, 150, 30)
-        self.area_optima_button_text = self.font.render("Área Óptima", True, self.white)
-        self.area_optima_button_text_rect = self.area_optima_button_text.get_rect(center=self.area_optima_button_rect.center)
-
 
         # Atributos para almacenar los límites del plano
         self.x_min = None
@@ -160,9 +154,7 @@ class Interface:
                 self.process_point_list()
             elif self.load_json_button_rect.collidepoint(event.pos):
                 self.cargar_json_dialog() # Usar el texto del campo de entrada como ruta
-            elif self.area_optima_button_rect.collidepoint(event.pos):
-                pass
-                # self.cargar_mas_optimo(self)
+
 
                 
             # Manejo de los botones de navegación de árboles (sin cambios)
@@ -391,11 +383,6 @@ class Interface:
         pygame.draw.rect(self.screen, self.blue, self.last_button_rect)
         pygame.draw.rect(self.screen, self.black, self.last_button_rect, 2)
         self.screen.blit(self.last_button_text, (self.last_button_rect.x + 10, self.last_button_rect.y + 5))
-        
-        # Dibujar botón de Área Óptima
-        pygame.draw.rect(self.screen, self.blue, self.area_optima_button_rect)
-        pygame.draw.rect(self.screen, self.black, self.area_optima_button_rect, 2)
-        self.screen.blit(self.area_optima_button_text, self.area_optima_button_text_rect)
         
         # Sección derecha para la cuadrícula
         #print(f"Índice del árbol actual: {self.current_tree_index}")
