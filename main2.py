@@ -16,7 +16,10 @@ puntos = utils.permutaciones_unique_puntos(array)
 arbol = utils.generar_arbol(array)
 
 print(arbol.recorrido_anchura_con_orientacion())
+print("Recorrido correcto")
 recorrido_correcto = arbol.recorrido_anchura_con_orientacion()
+print("Recorrido correcto")
+print(recorrido_correcto)
 
 #plano=Plano(recorrido_correcto)
 #coordenadas_lineas, lineas_verticales, lineas_horizontales = plano.generar_lineas()

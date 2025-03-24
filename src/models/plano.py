@@ -16,8 +16,8 @@ class Plano:
     def calcular_limites(self): 
     
         # El marco en realidad el minimo siempre seria 0
-        marco_x = Punto([0, max(p[0] for p in self.puntos) + 1]) #(min, max) x
-        marco_y = Punto([0, max(p[1] for p in self.puntos) + 1])# (min, max) y 
+        marco_x = Punto([0, max(p[0] for p in self.puntos)+1]) #(min, max) x
+        marco_y = Punto([0, max(p[1] for p in self.puntos)+1])# (min, max) y 
         
         # Y el maximo siempre seria el maximo de los 2, x o y
         marco_superior = max(marco_x.posicion[1], marco_y.posicion[1])

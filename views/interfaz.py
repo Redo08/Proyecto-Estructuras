@@ -1,5 +1,5 @@
 # mi_proyecto/interfaz_puntos.py
-
+import json
 import pygame
 import ast  # Para evaluar la cadena como una lista
 from src.models.arbol import Nodo, Arbol
@@ -16,6 +16,7 @@ class Interface:
         self.white = (255, 255, 255)
         self.blue = (0, 128, 128)
         self.font = pygame.font.Font(None, 22)
+        self.font_small = pygame.font.Font(None, 16) # Fuente más pequeña para las etiquetas de la cuadrícula
 
         self.points =[]
         self.input_list_str = ""
@@ -50,16 +51,48 @@ class Interface:
         self.points_display_rect = pygame.Rect(20, self.add_button_rect.bottom + 20, self.screen_width - 40, self.input_rect_list.height) # Debajo del botón, con espacio, toma las medidas de la caja donde se ingresan los datos
         # Nueva sección para la cuadrícula (parte derecha)
         self.grid_section_rect=pygame.Rect(self.screen_width//2+20,150,self.screen_width//2-40,400)
+        
+        
+        # Atributos para almacenar los límites del plano
+        self.x_min = None
+        self.x_max = None
+        self.y_min = None
+        self.y_max = None               
+        
         self.running = True
+        self.all_lines_list =[]# Inicializa self.all_lines_list aquí
+    # Nuevo método para establecer los límites del plano
+    def establecer_limites_plano(self, x_min, x_max, y_min, y_max):
+        self.x_min = x_min
+        self.x_max = x_max
+        self.y_min = y_min
+        self.y_max = y_max
+
     #Nuevo procedimiento para arboles
-    def set_tree_list(self, new_tree_list):
+    def set_tree_list(self, new_tree_list,new_all_lines_list):
         """Actualiza la lista de árboles y resetea el índice."""
         self.tree_list = new_tree_list
+        self.all_lines_list = new_all_lines_list
         self.current_tree_index = 0 
 
-    def cargar_y_graficar_arboles(self, lista_de_arboles):
+    def cargar_y_graficar_arboles(self, lista_de_arboles,lista_de_todas_las_lineas):
         """Carga la lista de árboles y fuerza un redibujado."""
-        self.set_tree_list(lista_de_arboles)
+        self.set_tree_list(lista_de_arboles, lista_de_todas_las_lineas)
+        # Aquí podrías calcular los límites del plano basándote en las líneas del primer árbol
+        """if lista_de_todas_las_lineas and lista_de_todas_las_lineas[0]:
+            min_x = float('inf')
+            max_x = float('-inf')
+            min_y = float('inf')
+            max_y = float('-inf')
+            for linea in lista_de_todas_las_lineas[0]:
+                punto, punto_inicial, punto_final = linea
+                min_x = min(min_x, punto[0], punto_inicial[0], punto_final[0])
+                max_x = max(max_x, punto[0], punto_inicial[0], punto_final[0])
+                min_y = min(min_y, punto[1], punto_inicial[1], punto_final[1])
+                max_y = max(max_y, punto[1], punto_inicial[1], punto_final[1])
+            print(f"Calculated min_x: {min_x}, max_x: {max_x}, min_y: {min_y}, max_y: {max_y}") # Imprimir límites calculados
+            self.establecer_limites_plano(min_x, max_x, min_y, max_y)
+            print(f"Calculated y_min: {self.y_min}, y_max: {self.y_max}") # Imprime los límites Y calculados """
         pygame.display.flip() # Fuerza una actualización de la pantalla inmediatamente
 
     def handle_input(self, event):
@@ -104,23 +137,113 @@ class Interface:
                 print("Por favor, ingresa una lista válida de tuplas con formato [(x, y), ...]")
         except (SyntaxError, ValueError):
             print("Error al procesar la lista. Asegúrate de usar el formato correcto: [(x, y), ...]")
-    def dibujar_cuadricula(self, screen):
-        """Dibuja una cuadrícula en la sección derecha."""
-        grid_rect = self.grid_section_rect
-        grid_color = (200, 200, 200) # Color gris claro para la cuadrícula
-        line_thickness = 1
-
-        # Dibujar líneas verticales
-        for x in range(grid_rect.left, grid_rect.right, 50): # Espacio de 50 píxeles entre líneas
-            pygame.draw.line(screen, grid_color, (x, grid_rect.top), (x, grid_rect.bottom), line_thickness)
-
-        # Dibujar líneas horizontales
-        for y in range(grid_rect.top, grid_rect.bottom, 50): # Espacio de 50 píxeles entre líneas
-            pygame.draw.line(screen, grid_color, (grid_rect.left, y), (grid_rect.right, y), line_thickness)
-
-        # Dibujar el borde de la sección de la cuadrícula (opcional)
-        pygame.draw.rect(screen, self.black, grid_rect, 2)
     
+    def dibujar_lineas_plano(self):
+        """Dibuja las líneas del plano y su primer punto en la sección derecha (cuadrícula)."""
+        line_color = (0, 0, 0) # Negro para las líneas
+        line_thickness = 2
+        point_color = (255, 0, 0) # Rojo para el primer punto
+        point_radius = 3
+        padding = 10
+
+        # Calcula la escala para ajustar las líneas dentro de grid_section_rect
+        if self.x_min is not None and self.x_max is not None and self.y_min is not None and self.y_max is not None and self.grid_section_rect:
+            range_x = self.x_max - self.x_min
+            range_y = self.y_max - self.y_min
+            if range_x > 0 and range_y > 0:
+                scale_x = (self.grid_section_rect.width - 2 * padding) / range_x
+                scale_y = (self.grid_section_rect.height - 2 * padding) / range_y
+
+                # Iterar sobre la lista correcta de líneas
+                if self.all_lines_list and 0 <= self.current_tree_index < len(self.all_lines_list):
+                    lineas_para_arbol_actual = self.all_lines_list[self.current_tree_index]
+                    for linea in lineas_para_arbol_actual:
+                        punto, punto_inicial, punto_final = linea
+
+                        # Calcular las coordenadas en la cuadrícula
+                        x1_line = self.grid_section_rect.left + padding + (punto_inicial[0] - self.x_min) * scale_x
+                        y1_line = self.grid_section_rect.bottom - padding - (punto_inicial[1] - self.y_min) * scale_y
+                        x2_line = self.grid_section_rect.left + padding + (punto_final[0] - self.x_min) * scale_x
+                        y2_line = self.grid_section_rect.bottom - padding - (punto_final[1] - self.y_min) * scale_y
+
+                        # Dibujar la línea
+                        pygame.draw.line(self.screen, line_color, (int(x1_line), int(y1_line)), (int(x2_line), int(y2_line)), line_thickness)
+
+                        # Dibujar el primer punto
+                        x_point = self.grid_section_rect.left + padding + (punto[0] - self.x_min) * scale_x
+                        y_point = self.grid_section_rect.bottom - padding - (punto[1] - self.y_min) * scale_y
+                        pygame.draw.circle(self.screen, point_color, (int(x_point), int(y_point)), point_radius)
+    
+    def establecer_limites_plano(self, x_min, x_max, y_min, y_max):
+        self.x_min = x_min
+        self.x_max = x_max
+        self.y_min = y_min
+        self.y_max = y_max
+
+    def draw_grid_with_labels(self, screen):
+
+        """Dibuja la cuadrícula con etiquetas en la sección derecha."""
+        grid_rect = self.grid_section_rect
+        grid_color = (200, 200, 200)
+        line_thickness = 1
+        padding = 10  # Espacio alrededor de la cuadrícula dentro de su sección
+
+        if self.x_min is not None and self.x_max is not None and self.y_min is not None and self.y_max is not None:
+            range_x = self.x_max - self.x_min
+            range_y = self.y_max - self.y_min
+
+            if range_x > 0 and range_y > 0:
+                # Dibujar el borde de la sección de la cuadrícula
+                pygame.draw.rect(screen, self.black, grid_rect, 2)
+
+                # Calcular el espacio disponible para la cuadrícula dentro de la sección
+                grid_inner_rect = pygame.Rect(grid_rect.left + padding, grid_rect.top + padding,
+                                             grid_rect.width - 2 * padding, grid_rect.height - 2 * padding)
+
+                # Dibujar líneas verticales y etiquetas del eje X
+                num_x_segments = 21 # Puedes ajustar la cantidad de segmentos
+                if num_x_segments > 0:
+                    x_step = range_x / num_x_segments
+                    for i in range(num_x_segments + 1):
+                        x_val = self.x_min + i * x_step
+                        x_pixel = grid_inner_rect.left + (x_val - self.x_min) * (grid_inner_rect.width / range_x)
+                        pygame.draw.line(screen, grid_color, (int(x_pixel), grid_inner_rect.top), (int(x_pixel), grid_inner_rect.bottom), line_thickness)
+                        # Mostrar etiquetas solo en ciertos intervalos para evitar superposición
+                        if i % (num_x_segments // 10) == 0 or i == 0 or i == num_x_segments: # Mostrar 5 etiquetas aproximadamente
+                            text = self.font_small.render(f"{x_val:.1f}", True, self.black)
+                            text_rect = text.get_rect(midtop=(int(x_pixel), grid_rect.bottom - padding + 5))
+                            screen.blit(text, text_rect)
+
+                # Dibujar líneas horizontales y etiquetas del eje Y
+                print(self.y_max)
+                num_y_segments = self.x_max # Puedes ajustar la cantidad de segmentos
+                if num_y_segments > 0:
+                    y_step = range_y / num_y_segments
+                    for i in range(num_y_segments + 1):
+                        y_val = self.y_min + i * y_step
+                        y_pixel = grid_inner_rect.bottom - (y_val - self.y_min) * (grid_inner_rect.height / range_y)
+                        pygame.draw.line(screen, grid_color, (grid_inner_rect.left, int(y_pixel)), (grid_inner_rect.right, int(y_pixel)), line_thickness)
+                        # Mostrar etiquetas solo en ciertos intervalos para evitar superposición
+                        if i % (num_y_segments // 10) == 0 or i == 0 or i == num_y_segments: # Mostrar 5 etiquetas aproximadamente
+                            text = self.font_small.render(f"{y_val:.1f}", True, self.black)
+                            text_rect = text.get_rect(midright=(grid_rect.left + padding - 5, int(y_pixel)))
+                            screen.blit(text, text_rect)
+
+                # Dibujar los ejes X e Y más gruesos
+                pygame.draw.line(screen, self.black, (grid_inner_rect.left, grid_inner_rect.bottom), (grid_inner_rect.right, grid_inner_rect.bottom), 2) # Eje X
+                pygame.draw.line(screen, self.black, (grid_inner_rect.left, grid_inner_rect.top), (grid_inner_rect.left, grid_inner_rect.bottom), 2) # Eje Y
+            else:
+                # Dibujar el borde si no hay rango de datos
+                pygame.draw.rect(screen, self.black, grid_rect, 2)
+                no_data_text = self.font.render("No hay datos para la cuadrícula.", True, self.black)
+                text_rect = no_data_text.get_rect(center=grid_rect.center)
+                screen.blit(no_data_text, text_rect)
+        else:
+            # Dibujar el borde si los límites no están definidos
+            pygame.draw.rect(screen, self.black, grid_rect, 2)
+            no_limits_text = self.font.render("Límites del plano no definidos.", True, self.black)
+            text_rect = no_limits_text.get_rect(center=grid_rect.center)
+            screen.blit(no_limits_text, text_rect)
     def draw(self):
         self.screen.fill(self.white)
 
@@ -197,18 +320,20 @@ class Interface:
         self.screen.blit(self.last_button_text, (self.last_button_rect.x + 10, self.last_button_rect.y + 5))
         
         # Sección derecha para la cuadrícula
-        self.dibujar_cuadricula(self.screen)
-
+        #print(f"Índice del árbol actual: {self.current_tree_index}")
+        #print(f"Contenido de self.all_lines_list: {self.all_lines_list}")
+        self.draw_grid_with_labels(self.screen)
+        self.dibujar_lineas_plano()
         pygame.display.flip()
 
-    def run(self):
-        while self.running:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.running = False
-                self.handle_input(event)
-            self.draw()
-        pygame.quit()
+    #def run(self):
+       # while self.running:
+       #     for event in pygame.event.get():
+        #        if event.type == pygame.QUIT:
+        #            self.running = False
+        #        self.handle_input(event)
+        #    self.draw()
+        #pygame.quit()
 
     def get_points(self):
         return self.points
