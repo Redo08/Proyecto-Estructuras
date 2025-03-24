@@ -46,10 +46,14 @@ if __name__ == "__main__":
                     utils = Utils()
 
                     arboles = utils.permutaciones_unique_arbol(lista_de_puntos)
+                    puntos = utils.permutaciones_unique_puntos(lista_de_puntos)
                     lineas=utils.generar_todas_las_lineas_por_arbol(arboles)
                     print("Las lineas son", lineas)
                     # Envía la lista de árboles a la interfaz usando el método cargar_y_graficar_arboles
                     interfaz.cargar_y_graficar_arboles(arboles,lineas)
+                    # Cargar area optima
+                    arbol_optimo, area = utils.areas_optimas(puntos)
+                    
                     trees_loaded = True
                     print(f"\nSe generaron {len(arboles)} árboles únicos con sus líneas.")
                     #print(Arbol.recorrido_anchura_con_orientacion())
