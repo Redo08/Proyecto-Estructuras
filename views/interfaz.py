@@ -1,13 +1,16 @@
 # mi_proyecto/interfaz_puntos.py
+import tkinter as tk
+from tkinter import filedialog
 import json
 import pygame
+import os 
 import ast  # Para evaluar la cadena como una lista
 from src.models.arbol import Nodo, Arbol
 from views.grafica_arbol import dibujar_arbol
 class Interface:
     def __init__(self,tree_list=None):
         pygame.init()
-        self.screen_width = 800
+        self.screen_width = 1000
         self.screen_height = 768
         self.screen = pygame.display.set_mode((self.screen_width, self.screen_height))
         pygame.display.set_caption("Creador de Planos")
@@ -25,6 +28,12 @@ class Interface:
         self.add_button_rect = pygame.Rect(600, 50, 150, 30)
         self.add_button_text = self.font.render("Ingresar Lista", True, self.white)
         self.add_button_text_rect = self.add_button_text.get_rect(center=self.add_button_rect.center)
+        
+         # Nuevo botón para cargar desde JSON
+        self.load_json_button_rect = pygame.Rect(800, 50, 180, 30) # Colocarlo a la derecha de "Ingresar Lista"
+        self.load_json_button_text = self.font.render("Cargar JSON", True, self.white)
+        self.load_json_button_text_rect = self.load_json_button_text.get_rect(center=self.load_json_button_rect.center)
+
 
         # Nueva sección para los árboles
         self.tree_list = tree_list if tree_list is not None else []
@@ -58,7 +67,8 @@ class Interface:
         self.x_max = None
         self.y_min = None
         self.y_max = None               
-        
+        self.root_tk = tk.Tk() # Inicializa tkinter
+        self.root_tk.withdraw()
         self.running = True
         self.all_lines_list =[]# Inicializa self.all_lines_list aquí
     # Nuevo método para establecer los límites del plano
@@ -67,8 +77,32 @@ class Interface:
         self.x_max = x_max
         self.y_min = y_min
         self.y_max = y_max
+    
+    def cargar_json_dialog(self):
+        # raiz = tk.Tk()  <-- Elimina esta línea
+        # raiz.withdraw()  <-- Elimina esta línea
+        
+        # Abrir el explorador de archivos y filtrar solo archivos JSON
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Archivos JSON", "*.json")],
+            title="Seleccionar archivo JSON" # Opcional: título de la ventana
+        )
 
-    #Nuevo procedimiento para arboles
+        if file_path:  # Si el usuario seleccionó un archivo
+            try:
+                with open(file_path, "r", encoding="utf-8") as archivo_data:
+                    data = json.load(archivo_data)
+                    if isinstance(data, list) and all(isinstance(point, list) and len(point) == 2 for point in data):
+                        self.points = [tuple(point) for point in data]
+                        print(f"Puntos cargados desde JSON: {self.points}")
+                    else:
+                        print("El archivo JSON debe contener una lista de listas o tuplas con formato [[x, y], ...]")
+            except FileNotFoundError:
+                print(f"Error: No se encontró el archivo en la ruta: {file_path}")
+            except json.JSONDecodeError:
+                print(f"Error: El archivo en la ruta: {file_path} no es un JSON válido.")
+            except Exception as e:
+                print(f"Ocurrió un error al cargar el JSON: {e}")
     def set_tree_list(self, new_tree_list,new_all_lines_list):
         """Actualiza la lista de árboles y resetea el índice."""
         self.tree_list = new_tree_list
@@ -79,20 +113,7 @@ class Interface:
         """Carga la lista de árboles y fuerza un redibujado."""
         self.set_tree_list(lista_de_arboles, lista_de_todas_las_lineas)
         # Aquí podrías calcular los límites del plano basándote en las líneas del primer árbol
-        """if lista_de_todas_las_lineas and lista_de_todas_las_lineas[0]:
-            min_x = float('inf')
-            max_x = float('-inf')
-            min_y = float('inf')
-            max_y = float('-inf')
-            for linea in lista_de_todas_las_lineas[0]:
-                punto, punto_inicial, punto_final = linea
-                min_x = min(min_x, punto[0], punto_inicial[0], punto_final[0])
-                max_x = max(max_x, punto[0], punto_inicial[0], punto_final[0])
-                min_y = min(min_y, punto[1], punto_inicial[1], punto_final[1])
-                max_y = max(max_y, punto[1], punto_inicial[1], punto_final[1])
-            print(f"Calculated min_x: {min_x}, max_x: {max_x}, min_y: {min_y}, max_y: {max_y}") # Imprimir límites calculados
-            self.establecer_limites_plano(min_x, max_x, min_y, max_y)
-            print(f"Calculated y_min: {self.y_min}, y_max: {self.y_max}") # Imprime los límites Y calculados """
+        
         pygame.display.flip() # Fuerza una actualización de la pantalla inmediatamente
 
     def handle_input(self, event):
@@ -104,7 +125,10 @@ class Interface:
 
             if self.add_button_rect.collidepoint(event.pos):
                 self.process_point_list()
-             # Manejo de los botones de navegación de árboles
+            elif self.load_json_button_rect.collidepoint(event.pos):
+                self.cargar_json_dialog() # Usar el texto del campo de entrada como ruta
+
+            # Manejo de los botones de navegación de árboles (sin cambios)
             if self.first_button_rect.collidepoint(event.pos):
                 self.current_tree_index = 0
             elif self.prev_button_rect.collidepoint(event.pos):
@@ -116,11 +140,14 @@ class Interface:
             elif self.last_button_rect.collidepoint(event.pos):
                 if self.tree_list:
                     self.current_tree_index = len(self.tree_list) - 1
+
         if event.type == pygame.KEYDOWN:
             if self.input_active_list:
                 if event.key == pygame.K_RETURN:
                     self.input_active_list = False
-                    self.process_point_list()
+                    # Aquí podríamos verificar si se presionó Enter después de ingresar una lista o una ruta de JSON
+                    # Podrías agregar lógica adicional si quieres que Enter active alguna de las dos funciones
+                    self.process_point_list() # Por ahora, Enter solo procesa la lista manual
                 elif event.key == pygame.K_BACKSPACE:
                     self.input_list_str = self.input_list_str[:-1]
                 else:
@@ -201,7 +228,8 @@ class Interface:
                                              grid_rect.width - 2 * padding, grid_rect.height - 2 * padding)
 
                 # Dibujar líneas verticales y etiquetas del eje X
-                num_x_segments = 21 # Puedes ajustar la cantidad de segmentos
+                print("el x max, es: ", self.x_max)
+                num_x_segments = self.x_max # Puedes ajustar la cantidad de segmentos
                 if num_x_segments > 0:
                     x_step = range_x / num_x_segments
                     for i in range(num_x_segments + 1):
@@ -209,14 +237,15 @@ class Interface:
                         x_pixel = grid_inner_rect.left + (x_val - self.x_min) * (grid_inner_rect.width / range_x)
                         pygame.draw.line(screen, grid_color, (int(x_pixel), grid_inner_rect.top), (int(x_pixel), grid_inner_rect.bottom), line_thickness)
                         # Mostrar etiquetas solo en ciertos intervalos para evitar superposición
-                        if i % (num_x_segments // 10) == 0 or i == 0 or i == num_x_segments: # Mostrar 5 etiquetas aproximadamente
+                        if num_x_segments > 0 and (i % max(1, num_x_segments // 10) == 0 or i == 0 or i == num_x_segments): # Mostrar etiquetas aproximadamente
                             text = self.font_small.render(f"{x_val:.1f}", True, self.black)
                             text_rect = text.get_rect(midtop=(int(x_pixel), grid_rect.bottom - padding + 5))
                             screen.blit(text, text_rect)
 
                 # Dibujar líneas horizontales y etiquetas del eje Y
-                print(self.y_max)
-                num_y_segments = self.x_max # Puedes ajustar la cantidad de segmentos
+                
+                print("el y max, es: ", self.y_max)
+                num_y_segments = self.y_max # Puedes ajustar la cantidad de segmentos
                 if num_y_segments > 0:
                     y_step = range_y / num_y_segments
                     for i in range(num_y_segments + 1):
@@ -224,7 +253,7 @@ class Interface:
                         y_pixel = grid_inner_rect.bottom - (y_val - self.y_min) * (grid_inner_rect.height / range_y)
                         pygame.draw.line(screen, grid_color, (grid_inner_rect.left, int(y_pixel)), (grid_inner_rect.right, int(y_pixel)), line_thickness)
                         # Mostrar etiquetas solo en ciertos intervalos para evitar superposición
-                        if i % (num_y_segments // 10) == 0 or i == 0 or i == num_y_segments: # Mostrar 5 etiquetas aproximadamente
+                        if num_y_segments > 0 and (i % max(1, num_y_segments // 10) == 0 or i == 0 or i == num_y_segments): # Mostrar etiquetas aproximadamente
                             text = self.font_small.render(f"{y_val:.1f}", True, self.black)
                             text_rect = text.get_rect(midright=(grid_rect.left + padding - 5, int(y_pixel)))
                             screen.blit(text, text_rect)
@@ -261,7 +290,10 @@ class Interface:
         pygame.draw.rect(self.screen, self.blue, self.add_button_rect)
         pygame.draw.rect(self.screen, self.black, self.add_button_rect, 2)
         self.screen.blit(self.add_button_text, self.add_button_text_rect)
-
+        # Nuevo botón para cargar desde JSON
+        pygame.draw.rect(self.screen, self.blue, self.load_json_button_rect)
+        pygame.draw.rect(self.screen, self.black, self.load_json_button_rect, 2)
+        self.screen.blit(self.load_json_button_text, self.load_json_button_text_rect)
          # Recuadro para mostrar la lista de puntos
         self.points_display_rect = pygame.Rect(20, self.add_button_rect.bottom + 20, self.screen_width - 2*20, self.input_rect_list.height) # Debajo del botón, con espacio, toma las medidas de la caja donde se ingresan los datos
         pygame.draw.rect(self.screen, self.black, self.points_display_rect, 2) # Dibujar el borde del recuadro
