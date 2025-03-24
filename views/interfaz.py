@@ -228,7 +228,6 @@ class Interface:
                                              grid_rect.width - 2 * padding, grid_rect.height - 2 * padding)
 
                 # Dibujar líneas verticales y etiquetas del eje X
-                print("el x max, es: ", self.x_max)
                 num_x_segments = self.x_max # Puedes ajustar la cantidad de segmentos
                 if num_x_segments > 0:
                     x_step = range_x / num_x_segments
@@ -244,7 +243,6 @@ class Interface:
 
                 # Dibujar líneas horizontales y etiquetas del eje Y
                 
-                print("el y max, es: ", self.y_max)
                 num_y_segments = self.y_max # Puedes ajustar la cantidad de segmentos
                 if num_y_segments > 0:
                     y_step = range_y / num_y_segments
