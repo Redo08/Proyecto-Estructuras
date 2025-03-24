@@ -50,11 +50,12 @@ class Plano:
                         #Donde esta? 
                         #Arriba
                         if y > valor_y:
-                            y_inicio = valor_y
-                        
+                            if y_inicio < valor_y: # Nueva verificación para que no importe el orden de entrada de las lineas, siempre pone el correcto
+                                y_inicio = valor_y
                         #Abajo
                         if y < valor_y:
-                            y_final = valor_y
+                            if y_final > valor_y:
+                                y_final = valor_y
                 nueva_linea = (x,y_inicio, y_final)
                 if nueva_linea not in lineas_v:
                     lineas_v.append((x,y_inicio, y_final))
@@ -69,11 +70,12 @@ class Plano:
                         #Donde?
                         #Izquierda
                         if x < valor_x:
-                            x_final = valor_x #Si esta en la izquierda, cambia el final
-                        
+                            if x_final > valor_x:
+                                x_final = valor_x #Si esta en la izquierda, cambia el final
                         #Derecha
                         if x > valor_x:
-                            x_inicio = valor_x #Si esta a la derecha, se cambia el inicio
+                            if x_inicio <valor_x:
+                                x_inicio = valor_x #Si esta a la derecha, se cambia el inicio
                             
                 nueva_linea = (y, x_inicio, x_final)
                 if nueva_linea not in lineas_h:

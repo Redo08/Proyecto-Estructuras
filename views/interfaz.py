@@ -201,7 +201,7 @@ class Interface:
                                              grid_rect.width - 2 * padding, grid_rect.height - 2 * padding)
 
                 # Dibujar líneas verticales y etiquetas del eje X
-                num_x_segments = 21 # Puedes ajustar la cantidad de segmentos
+                num_x_segments = self.x_max # Puedes ajustar la cantidad de segmentos
                 if num_x_segments > 0:
                     x_step = range_x / num_x_segments
                     for i in range(num_x_segments + 1):
@@ -215,8 +215,7 @@ class Interface:
                             screen.blit(text, text_rect)
 
                 # Dibujar líneas horizontales y etiquetas del eje Y
-                print(self.y_max)
-                num_y_segments = self.x_max # Puedes ajustar la cantidad de segmentos
+                num_y_segments = self.y_max # Puedes ajustar la cantidad de segmentos
                 if num_y_segments > 0:
                     y_step = range_y / num_y_segments
                     for i in range(num_y_segments + 1):
