@@ -55,9 +55,9 @@ class Plano:
                         #Abajo
                         if y < valor_y:
                             y_final = valor_y
-
-                        
-                lineas_v.append((x,y_inicio, y_final))
+                nueva_linea = (x,y_inicio, y_final)
+                if nueva_linea not in lineas_v:
+                    lineas_v.append((x,y_inicio, y_final))
                 lineas_totales.append(((x,y),(x, y_inicio), (x, y_final)))
 
             #Empezamos las lineas horizontales
@@ -74,8 +74,10 @@ class Plano:
                         #Derecha
                         if x > valor_x:
                             x_inicio = valor_x #Si esta a la derecha, se cambia el inicio
-
-                lineas_h.append((y, x_inicio, x_final)) 
+                            
+                nueva_linea = (y, x_inicio, x_final)
+                if nueva_linea not in lineas_h:
+                    lineas_h.append((y, x_inicio, x_final)) 
                 lineas_totales.append(((x,y),(x_inicio, y), (x_final, y)))
         
         #Agregamos al final las lineas que cierran el plano

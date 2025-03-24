@@ -6,6 +6,7 @@ WIDTH, HEIGHT = 800, 600
 NODE_RADIUS = 20
 LINE_COLOR = (0, 0, 0)
 NODE_COLOR = (0, 128, 128)
+BACKGROUND_COLOR = (255, 255, 255)
 longitu_conexion=50
 
 def dibujar_arbol(screen, nodo, x, y, espacio_x):
@@ -25,3 +26,21 @@ def dibujar_arbol(screen, nodo, x, y, espacio_x):
     font = pygame.font.Font(None, 18)
     text = font.render(str(nodo.valor), True, (255, 255, 255))
     screen.blit(text, (x - 15, y - 10))
+    
+def visualizar_arbol(arbol):
+    """Inicia PyGame y grafica el árbol binario recibido."""
+    pygame.init()
+    screen = pygame.display.set_mode((WIDTH, HEIGHT))
+    pygame.display.set_caption("Árbol Binario")
+
+    running = True
+    while running:
+        screen.fill(BACKGROUND_COLOR)
+        dibujar_arbol(screen, arbol.raiz, WIDTH // 2, 50, WIDTH // 4)
+        pygame.display.flip()
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+
+    pygame.quit()
