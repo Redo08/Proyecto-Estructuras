@@ -40,8 +40,9 @@ class Interface:
         #self.load_json_button_rect = pygame.Rect()
 
         # Nueva sección para los árboles
-        self.tree_list = tree_list if tree_list is not None else []
-        self.current_tree_index = 0 
+        self.tree_list = tree_list if tree_list is not None else [] #Se almacena la lista de los arboles
+        self.current_tree_index = 0  # Índice del árbol actual para mostrar
+
         # Definición de rectángulos para la sección de árboles y los botones
         self.trees_section_rect = pygame.Rect(20, 150, self.screen_width // 2 - 40, 400) # Mitad izquierda
         self.button_width = 80
@@ -80,13 +81,30 @@ class Interface:
         self.root_tk.withdraw()
         self.running = True
         self.all_lines_list =[]# Inicializa self.all_lines_list aquí
+         # Nuevo botón para mostrar el óptimo
+        self.optimal_button_width = 150
+        self.optimal_button_height = 30
+        self.optimal_button_x = self.grid_section_rect.x + (self.grid_section_rect.width - self.optimal_button_width) // 2
+        self.optimal_button_y = self.grid_section_rect.bottom + 20
+        self.optimal_button_rect = pygame.Rect(self.optimal_button_x, self.optimal_button_y, self.optimal_button_width, self.optimal_button_height)
+        self.optimal_button_text = self.font.render("Mostrar Óptimo", True, self.white)
+        self.optimal_button_text_rect = self.optimal_button_text.get_rect(center=self.optimal_button_rect.center)
+
+        # Atributo para almacenar el índice del árbol óptimo
+        self.optimal_tree_index = None
     # Nuevo método para establecer los límites del plano
+
     def establecer_limites_plano(self, x_min, x_max, y_min, y_max):
         self.x_min = x_min
         self.x_max = x_max
         self.y_min = y_min
         self.y_max = y_max
-    
+    def set_optimal_tree_index(self, index):
+        """Establece el índice del árbol óptimo en la lista."""
+        if self.tree_list is not None and 0 <= index < len(self.tree_list):
+            self.optimal_tree_index = index
+        else:
+            print(f"Índice de árbol óptimo fuera de rango: {index}")
     def cargar_json_dialog(self):
         # raiz = tk.Tk()  <-- Elimina esta línea
         # raiz.withdraw()  <-- Elimina esta línea
@@ -159,8 +177,10 @@ class Interface:
             elif self.last_button_rect.collidepoint(event.pos):
                 if self.tree_list:
                     self.current_tree_index = len(self.tree_list) - 1
-            elif self.area_optima_button_rect.collidepoint(event.pos):
-                print("Oprimida")
+             # Manejo del clic en el botón "Mostrar Óptimo"
+            elif self.optimal_button_rect.collidepoint(event.pos):
+                if self.optimal_tree_index is not None:
+                    self.current_tree_index = self.optimal_tree_index
 
         if event.type == pygame.KEYDOWN:
             if self.input_active_list:
@@ -249,6 +269,7 @@ class Interface:
                                              grid_rect.width - 2 * padding, grid_rect.height - 2 * padding)
 
                 # Dibujar líneas verticales y etiquetas del eje X
+                
                 num_x_segments = self.x_max # Puedes ajustar la cantidad de segmentos
                 if num_x_segments > 0:
                     x_step = range_x / num_x_segments
@@ -263,6 +284,7 @@ class Interface:
                             screen.blit(text, text_rect)
 
                 # Dibujar líneas horizontales y etiquetas del eje Y
+                
                 
                 num_y_segments = self.y_max # Puedes ajustar la cantidad de segmentos
                 if num_y_segments > 0:
@@ -380,16 +402,11 @@ class Interface:
         #print(f"Contenido de self.all_lines_list: {self.all_lines_list}")
         self.draw_grid_with_labels(self.screen)
         self.dibujar_lineas_plano()
+        # Dibujar el botón "Mostrar Óptimo"
+        pygame.draw.rect(self.screen, self.blue, self.optimal_button_rect)
+        pygame.draw.rect(self.screen, self.black, self.optimal_button_rect, 2)
+        self.screen.blit(self.optimal_button_text, self.optimal_button_text_rect)
         pygame.display.flip()
-
-    #def run(self):
-       # while self.running:
-       #     for event in pygame.event.get():
-        #        if event.type == pygame.QUIT:
-        #            self.running = False
-        #        self.handle_input(event)
-        #    self.draw()
-        #pygame.quit()
 
     def get_points(self):
         return self.points
