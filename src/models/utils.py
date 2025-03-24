@@ -101,8 +101,7 @@ class Utils:
         todas_las_lineas =[]
         for arbol in lista_de_arboles:
             puntos_arbol = arbol.recorrido_anchura_con_orientacion() # Ajusta esto según el método correcto en tu clase Arbol
-
-            plano = Plano(list(puntos_arbol)) # Crear una instancia de Plano para cada conjunto de puntos
+            plano = Plano(puntos_arbol) # Crear una instancia de Plano para cada conjunto de puntos
             plano.generar_lineas() # Generar las líneas para este conjunto de puntos
             todas_las_lineas.append(plano.lineas) # Guarda las líneas generadas para este conjunto de puntos
         return todas_las_lineas

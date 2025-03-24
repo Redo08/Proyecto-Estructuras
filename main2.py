@@ -38,7 +38,6 @@ print(arbol_optimo.recorrido_anchura_con_orientacion())
 plano = Plano(arbol_optimo.recorrido_anchura_con_orientacion())
 lineas_verticales, lineas_horizontales = plano.generar_lineas()
 
-print(plano.lineas)
 
 # for i in coordenadas_lineas:
 #    for j in coordenadas_lineas:
