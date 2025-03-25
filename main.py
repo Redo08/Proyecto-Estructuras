@@ -46,24 +46,16 @@ if __name__ == "__main__":
                     utils = Utils()
 
                     arboles = utils.permutaciones_unique_arbol(lista_de_puntos)
-                    # if event.type == pygame.MOUSEBUTTONDOWN:
-                    #     if interfaz.boton_area_optima.collidepoint(event.pos):  # Si se presiona el botón
-                    #         utils = Utils()
-                    #         areas_optimas = utils.generar_areas(arboles)  # Obtiene áreas óptimas con sus índices
-                    #         print("\nÍndices de árboles con sus áreas óptimas:")
-                    #         for idx, area in areas_optimas:
-                    #             print(f"Árbol {idx}: Área {area}")
-
-                    # # Opcional: Actualizar la interfaz con el árbol y sus áreas óptimas
-                    # interfaz.mostrar_area_optima(areas_optimas)
                     puntos = utils.permutaciones_unique_puntos(lista_de_puntos)
+                    
                     lineas=utils.generar_todas_las_lineas_por_arbol(arboles)
                     print("Las lineas son", lineas)
                     # Envía la lista de árboles a la interfaz usando el método cargar_y_graficar_arboles
                     interfaz.cargar_y_graficar_arboles(arboles,lineas)
                     # Cargar area optima
                     index,areas_optimas= utils.areas_optimas(puntos)
-                    #print("las areas optimas son",areas_optimas)
+                    #print("las areas optimas son",areas_optimas)}
+                    print("Index:", index)
                     interfaz.optimal_areas = areas_optimas
                     interfaz.set_optimal_tree_index(index)
                     trees_loaded = True
