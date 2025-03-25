@@ -52,11 +52,16 @@ if __name__ == "__main__":
                     print("Las lineas son", lineas)
                     # Envía la lista de árboles a la interfaz usando el método cargar_y_graficar_arboles
                     interfaz.cargar_y_graficar_arboles(arboles,lineas)
-                    
-                    index= utils.areas_optimas(puntos)
+                    # Cargar area optima
+                    index,areas_optimas= utils.areas_optimas(puntos)
+                    #print("las areas optimas son",areas_optimas)}
+                    print("Index:", index)
+                    interfaz.optimal_areas = areas_optimas
                     interfaz.set_optimal_tree_index(index)
                     trees_loaded = True
-                    print(f"\nSe generaron {len(arboles)} árboles únicos con sus líneas.")
+                    #print(f"\nSe generaron {len(arboles)} árboles únicos con sus líneas.")
+                    #print(Arbol.recorrido_anchura_con_orientacion())
+                    #recorrido_correcto = Arbol.recorrido_anchura_con_orientacion()
                     
 
             interfaz.draw()

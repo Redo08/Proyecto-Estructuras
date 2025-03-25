@@ -1,5 +1,6 @@
 from src.models.arbol import Arbol
 from src.models.plano import Plano
+from src.models.area import Area  # Importa la clase Area
 import copy
 import math
 class Utils:
@@ -92,10 +93,14 @@ class Utils:
                 area = posibles_areas
                 arbol_optimo = arbol
                 index_final = index
+
             index +=1
+        
+        lista_areas_optimas=self.lista_areas(area)
+        
         print("El arbol optimo es:", arbol_optimo)
         print("El area final es:", area, "Con tamaño", len(area)) 
-        return index_final
+        return index_final, lista_areas_optimas
     
     def generar_todas_las_lineas_por_arbol(self, lista_de_arboles):
         """
@@ -110,3 +115,12 @@ class Utils:
             plano.generar_lineas() # Generar las líneas para este conjunto de puntos
             todas_las_lineas.append(plano.lineas) # Guarda las líneas generadas para este conjunto de puntos
         return todas_las_lineas
+    
+    def lista_areas(self,lista_areas):
+        areas=[]
+        for area in lista_areas:
+            limites=area[0]
+            valor=area[1]
+            area_obj=Area(limites,valor)
+            areas.append(area_obj)
+        return areas
