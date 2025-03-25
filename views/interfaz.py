@@ -435,8 +435,6 @@ class Interface:
         """Dibuja las líneas del plano y su primer punto en la sección derecha (cuadrícula)."""
         line_color = (0, 0, 0) # Negro para las líneas
         line_thickness = 2
-        point_color = (255, 0, 0) # Rojo para el primer punto
-        point_radius = 3
         padding = 10
 
         # Calcula la escala para ajustar las líneas dentro de grid_section_rect
@@ -449,18 +447,61 @@ class Interface:
 
                 # Iterar sobre la lista correcta de líneas
                 if self.all_lines_list and 0 <= self.current_tree_index < len(self.all_lines_list):
-                    lineas_para_arbol_actual = self.all_lines_list[self.current_tree_index]
-                    for linea in lineas_para_arbol_actual:
-                        punto, punto_inicial, punto_final = linea
+                    lineas_actuales = self.all_lines_list[self.current_tree_index]
+                    
+                    #Inicializamos si el tiempo no existe
+                    if not hasattr(self, '_primera_ejecucion'):
+                        self._primera_ejecucion = True
+                        self.line_animation_data = {
+                            'start_time': pygame.time.get_ticks(),
+                            'last_added_index': -1,
+                            'visible_lines': []
+                        }
+                    
+                    if self._primera_ejecucion:
+                        # Lógica de animación solo para la primera vez
+                        current_time = pygame.time.get_ticks()
+                        elapsed = current_time - self.line_animation_data['start_time']
+                        draw_interval = 1000  # .5 segundo
 
-                        # Calcular las coordenadas en la cuadrícula
-                        x1_line = self.grid_section_rect.left + padding + (punto_inicial[0] - self.x_min) * scale_x
-                        y1_line = self.grid_section_rect.bottom - padding - (punto_inicial[1] - self.y_min) * scale_y
-                        x2_line = self.grid_section_rect.left + padding + (punto_final[0] - self.x_min) * scale_x
-                        y2_line = self.grid_section_rect.bottom - padding - (punto_final[1] - self.y_min) * scale_y
+                        target_index = min(int(elapsed / draw_interval), len(lineas_actuales) - 1)
 
-                        # Dibujar la línea
-                        pygame.draw.line(self.screen, line_color, (int(x1_line), int(y1_line)), (int(x2_line), int(y2_line)), line_thickness)
+                        while self.line_animation_data['last_added_index'] < target_index:
+                            next_index = self.line_animation_data['last_added_index'] + 1
+                            punto, p_inicial, p_final = lineas_actuales[next_index]
+
+                            x1 = self.grid_section_rect.left + padding + (p_inicial[0] - self.x_min) * scale_x
+                            y1 = self.grid_section_rect.bottom - padding - (p_inicial[1] - self.y_min) * scale_y
+                            x2 = self.grid_section_rect.left + padding + (p_final[0] - self.x_min) * scale_x
+                            y2 = self.grid_section_rect.bottom - padding - (p_final[1] - self.y_min) * scale_y
+
+                            self.line_animation_data['visible_lines'].append(((x1, y1), (x2, y2)))
+                            self.line_animation_data['last_added_index'] = next_index
+
+                            # Si llegamos al final, marcamos que ya no es la primera ejecución
+                            if next_index >= len(lineas_actuales) - 1:
+                                self._primera_ejecucion = False
+                                break
+
+                        # Dibujar solo las líneas animadas
+                        for line in self.line_animation_data['visible_lines']:
+                            pygame.draw.line(self.screen, line_color, 
+                                           (int(line[0][0]), int(line[0][1])),
+                                           (int(line[1][0]), int(line[1][1])), 
+                                           line_thickness)
+                    else:
+                        # Modo normal: dibuja todas las líneas inmediatamente
+                        for punto, p_inicial, p_final in lineas_actuales:
+                            x1 = self.grid_section_rect.left + padding + (p_inicial[0] - self.x_min) * scale_x
+                            y1 = self.grid_section_rect.bottom - padding - (p_inicial[1] - self.y_min) * scale_y
+                            x2 = self.grid_section_rect.left + padding + (p_final[0] - self.x_min) * scale_x
+                            y2 = self.grid_section_rect.bottom - padding - (p_final[1] - self.y_min) * scale_y
+
+                            pygame.draw.line(self.screen, line_color, 
+                                           (int(x1), int(y1)), 
+                                           (int(x2), int(y2)), 
+                                           line_thickness)
+                        
 
                         
     def draw_points(self):
