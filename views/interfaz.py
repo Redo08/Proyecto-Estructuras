@@ -3,8 +3,6 @@ import tkinter as tk
 from tkinter import filedialog
 import json
 import pygame
-import random
-import os 
 import ast  # Para evaluar la cadena como una lista
 from src.models.utils import Utils
 from src.models.arbol import Nodo, Arbol
@@ -281,7 +279,9 @@ class Interface:
                         first_letter = self.element_input_text[0].upper()
                         for area_obj in self.optimal_areas:
                             if area_obj == self.selected_area: # Aplicar solo al área seleccionada
-                                area_obj.elementos_graficos = [first_letter]
+                                if not area_obj.elementos_graficos:
+                                    area_obj.elementos_graficos =[]# Inicializa la lista si aún no existe
+                                area_obj.elementos_graficos.append(first_letter)
                         self.element_input_text = ""
                 elif event.key == pygame.K_BACKSPACE:
                     self.element_input_text = self.element_input_text[:-1]
@@ -414,7 +414,7 @@ class Interface:
                         pygame.draw.polygon(self.screen, borde, scaled_points, 2)
 
                         # Paso 17: Verifica si el objeto 'area_obj' tiene elementos gráficos asociados (por ejemplo, una etiqueta).
-                        if area_obj.elementos_graficos and isinstance(area_obj.elementos_graficos, list) and area_obj.elementos_graficos[0]:
+                        """if area_obj.elementos_graficos and isinstance(area_obj.elementos_graficos, list) and area_obj.elementos_graficos[0]:
                             # Paso 18: Configura la fuente para la etiqueta.
                             font = pygame.font.Font(None, 36)
                             # Paso 19: Obtiene el texto de la etiqueta del primer elemento de la lista.
@@ -427,8 +427,19 @@ class Interface:
                             # Paso 22: Obtiene el rectángulo que delimita la superficie del texto y lo centra en las coordenadas calculadas.
                             text_rect = text_surface.get_rect(center=(center_x, center_y))
                             # Paso 23: Dibuja la superficie del texto (la etiqueta) en la pantalla en la posición calculada.
-                            self.screen.blit(text_surface, text_rect)
-                            
+                            self.screen.blit(text_surface, text_rect)"""
+                        if area_obj.elementos_graficos and isinstance(area_obj.elementos_graficos, list):
+                            font = pygame.font.Font(None, 36)
+                            center_x = int(self.grid_section_rect.left + 10 + (sum(p[0] for p in area_obj.limites) / len(area_obj.limites) - self.x_min) * scale_x)
+                            center_y = int(self.grid_section_rect.bottom - 10 - (sum(p[1] for p in area_obj.limites) / len(area_obj.limites) - self.y_min) * scale_y)
+                            y_offset = 0  # Para dibujar elementos en diferentes líneas verticales
+
+                            for elemento in area_obj.elementos_graficos:
+                                if elemento:
+                                    text_surface = font.render(elemento, True, (0, 0, 0))
+                                    text_rect = text_surface.get_rect(center=(center_x, center_y + y_offset))
+                                    self.screen.blit(text_surface, text_rect)
+                                    y_offset += 20  # Ajusta este valor para el espaciado vertical entre elementos    
     def dibujar_lineas_plano(self):
         """Dibuja las líneas del plano y su primer punto en la sección derecha (cuadrícula)."""
         line_color = (0, 0, 0) # Negro para las líneas

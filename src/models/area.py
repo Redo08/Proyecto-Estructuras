@@ -1,10 +1,10 @@
 class Area:
     def __init__(self, limites, area): #Nombre String, Limites es una lista, color_fondo String, color_borde String
-        self.nombre = None
+        self.nombre = ""
         self.limites = limites
         self.color_fondo = None
         self.color_borde = None
-        self.elementos_graficos = None #Es un atributo o una nueva clase
+        self.elementos_graficos = [] #Es un atributo o una nueva clase
         self.area = area #El area del area seleccionada
     
     
