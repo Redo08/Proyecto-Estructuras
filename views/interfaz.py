@@ -337,11 +337,7 @@ class Interface:
             self.optimal_areas = areas_optimas
             self.set_optimal_tree_index(index)
             
-            print(f"🔍 Nuevo índice óptimo después de mover puntos: {self.optimal_tree_index}")
 
-            
-        print(f"📌 Después de actualizar: current_tree_index = {self.current_tree_index}")
-        print("✅ Saliendo de actualizar_lista_puntos")
         
     def process_point_list(self):
         try:
