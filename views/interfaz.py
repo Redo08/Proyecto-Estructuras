@@ -93,6 +93,7 @@ class Interface:
         self.area_background_color = (200, 200, 200) # Gris claro por defecto - Nuevo atributo
         self.area_outline_color = (0, 0, 0)       # Negro por defecto - Nuevo atributo
         self.optimal_areas = optimal_areas if optimal_areas is not None else []# Inicializamos optimal_areas - Nuevo atributo
+
         self.selected_area = None # Inicializamos el área seleccionada
 
         # Botones para cambiar el color
@@ -331,8 +332,9 @@ class Interface:
             self.cargar_y_graficar_arboles(arboles, lineas)
 
             # Actualizar el árbol óptimo
-            index = utils.areas_optimas(puntos)[0]
-            print(index)
+            index, areas_optimas = utils.areas_optimas(puntos)
+            
+            self.optimal_areas = areas_optimas
             self.set_optimal_tree_index(index)
             
             print(f"🔍 Nuevo índice óptimo después de mover puntos: {self.optimal_tree_index}")
