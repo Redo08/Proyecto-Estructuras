@@ -4,7 +4,7 @@ class Area:
         self.limites = limites
         self.color_fondo = None
         self.color_borde = None
-        self.elementos_graficos = None #Es un atributo o una nueva clase
+        self.elementos_graficos = [] #Es un atributo o una nueva clase
         self.area = area #El area del area seleccionada
     
     
