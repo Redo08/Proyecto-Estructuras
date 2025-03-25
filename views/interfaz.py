@@ -405,13 +405,15 @@ class Interface:
                     if scaled_points:
                         # Paso 13: Determina el color de fondo del área.
                         # Si el objeto 'area_obj' tiene un atributo 'color_fondo' establecido, se usa ese color; de lo contrario, se usa el color de fondo predeterminado de la interfaz.
-                        if area_obj.color_fondo is None:
-                            area_obj.color_fondo = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-                        fondo = area_obj.color_fondo
+                       # Solo dibuja el fondo si area_obj.color_fondo tiene un valor
+                        if area_obj.color_fondo is not None:
+                            fondo = area_obj.color_fondo
+                             # Paso 15: Dibuja el polígono relleno en la pantalla utilizando los puntos escalados y el color de fondo.
+                            pygame.draw.polygon(self.screen, fondo, scaled_points)
                         # Paso 14: Determina el color del borde del área de manera similar al color de fondo.
                         borde = area_obj.color_borde if area_obj.color_borde else (0, 0, 0) # Asegúrate de que el borde sea visible
-                        # Paso 15: Dibuja el polígono relleno en la pantalla utilizando los puntos escalados y el color de fondo.
-                        pygame.draw.polygon(self.screen, fondo, scaled_points)
+                       
+                        
                         # Paso 16: Dibuja el borde del polígono utilizando los mismos puntos escalados y el color del borde, con un grosor de 2 píxeles.
                         pygame.draw.polygon(self.screen, borde, scaled_points, 2)
 
@@ -462,11 +464,25 @@ class Interface:
                         # Dibujar la línea
                         pygame.draw.line(self.screen, line_color, (int(x1_line), int(y1_line)), (int(x2_line), int(y2_line)), line_thickness)
 
-                        # Dibujar el primer punto
-                        x_point = self.grid_section_rect.left + padding + (punto[0] - self.x_min) * scale_x
-                        y_point = self.grid_section_rect.bottom - padding - (punto[1] - self.y_min) * scale_y
-                        pygame.draw.circle(self.screen, point_color, (int(x_point), int(y_point)), point_radius)
-    
+                        
+    def draw_points(self):
+        """Dibuja los puntos en la sección derecha (cuadrícula)."""
+        point_color = (255, 0, 0) # Rojo para los puntos
+        point_radius = 3
+        padding = 10
+
+        if self.x_min is not None and self.x_max is not None and self.y_min is not None and self.y_max is not None and self.grid_section_rect:
+            range_x = self.x_max - self.x_min
+            range_y = self.y_max - self.y_min
+            if range_x > 0 and range_y > 0:
+                scale_x = (self.grid_section_rect.width - 2 * padding) / range_x
+                scale_y = (self.grid_section_rect.height - 2 * padding) / range_y
+
+                for point in self.points:
+                    x_point = self.grid_section_rect.left + padding + (point[0] - self.x_min) * scale_x
+                    y_point = self.grid_section_rect.bottom - padding - (point[1] - self.y_min) * scale_y
+                    pygame.draw.circle(self.screen, point_color, (int(x_point), int(y_point)), point_radius)
+
     def establecer_limites_plano(self, x_min, x_max, y_min, y_max):
         self.x_min = x_min
         self.x_max = x_max
@@ -657,7 +673,9 @@ class Interface:
         #print(f"Contenido de self.all_lines_list: {self.all_lines_list}")
         self.draw_grid_with_labels(self.screen)
         self.dibujar_lineas_plano()
+
         self.draw_areas()
+        self.draw_points()
         # Dibujar el botón "Mostrar Óptimo"
         pygame.draw.rect(self.screen, self.blue, self.optimal_button_rect)
         pygame.draw.rect(self.screen, self.black, self.optimal_button_rect, 2)
