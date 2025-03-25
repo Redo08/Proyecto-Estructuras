@@ -26,7 +26,7 @@ class Interface:
         self.font_small = pygame.font.Font(None, 16) # Fuente más pequeña para las etiquetas de la cuadrícula
 
         self.points =[]
-        self.radio_punto = 3
+        self.radio_punto = 1
         self.input_list_str = ""
         self.input_active_list = False
         self.input_rect_list = pygame.Rect(180, 50, 400, 30) #(x,y, ancho pix, larg pix)
@@ -127,6 +127,7 @@ class Interface:
             self.optimal_tree_index = index
         else:
             print(f"Índice de árbol óptimo fuera de rango: {index}")
+            
     def cargar_json_dialog(self):
         # raiz = tk.Tk()  <-- Elimina esta línea
         # raiz.withdraw()  <-- Elimina esta línea
@@ -152,6 +153,7 @@ class Interface:
                 print(f"Error: El archivo en la ruta: {file_path} no es un JSON válido.")
             except Exception as e:
                 print(f"Ocurrió un error al cargar el JSON: {e}")
+                
     def set_tree_list(self, new_tree_list,new_all_lines_list):
         """Actualiza la lista de árboles y resetea el índice."""
         self.tree_list = new_tree_list
@@ -288,6 +290,50 @@ class Interface:
                 else:
                     self.element_input_text += event.unicode
                     
+    def show_area_naming_dialog(self):
+        if not self.selected_area:
+            return
+            
+        # Configuración del diálogo
+        font = pygame.font.Font(None, 32)
+        input_box = pygame.Rect(300, 300, 400, 40)
+        color_inactive = pygame.Color('lightskyblue3')
+        color_active = pygame.Color('dodgerblue2')
+        color = color_active
+        active = True
+        text = self.selected_area.elementos_graficos[0] if hasattr(self.selected_area, 'elementos_graficos') and self.selected_area.elementos_graficos else ""
+        
+        while True:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    return
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        # Guardar el texto en el área
+                        if not hasattr(self.selected_area, 'elementos_graficos'):
+                            self.selected_area.elementos_graficos = []
+                        if len(self.selected_area.elementos_graficos) == 0:
+                            self.selected_area.elementos_graficos.append(text)
+                        else:
+                            self.selected_area.elementos_graficos[0] = text
+                        return
+                    elif event.key == pygame.K_ESCAPE:
+                        return
+                    elif event.key == pygame.K_BACKSPACE:
+                        text = text[:-1]
+                    else:
+                        text += event.unicode
+            
+            # Dibujar
+            self.screen.fill((240, 240, 240))
+            txt_surface = font.render(text, True, color)
+            width = max(400, txt_surface.get_width()+10)
+            input_box.w = width
+            self.screen.blit(font.render("Nombre del área:", True, (0,0,0)), (300, 270))
+            self.screen.blit(txt_surface, (input_box.x+5, input_box.y+5))
+            pygame.draw.rect(self.screen, color, input_box, 2)
+            pygame.display.flip()                    
+
     def verificar_seleccion(self, pos):
         """Verifica si el usuario hizo clic en un punto"""
         x, y = self.transformar_coordenadas(pos)  # Convertimos coordenadas
@@ -305,7 +351,6 @@ class Interface:
                 return
 
         self.punto_seleccionado = None
-
 
     def actualizar_lista_puntos(self):
         if self.points:  
@@ -337,8 +382,6 @@ class Interface:
             self.optimal_areas = areas_optimas
             self.set_optimal_tree_index(index)
             
-
-        
     def process_point_list(self):
         try:
             # Evaluamos la cadena como una lista literal de Python
