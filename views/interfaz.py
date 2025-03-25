@@ -78,7 +78,7 @@ class Interface:
         self.root_tk.withdraw()
         self.running = True
         self.all_lines_list =[]# Inicializa self.all_lines_list aquí
-         # Nuevo botón para mostrar el óptimo
+        # Nuevo botón para mostrar el óptimo
         self.optimal_button_width = 150
         self.optimal_button_height = 30
         self.optimal_button_x = self.grid_section_rect.x + (self.grid_section_rect.width - self.optimal_button_width) // 2
@@ -92,7 +92,11 @@ class Interface:
         self.area_outline_color = (0, 0, 0)       # Negro por defecto - Nuevo atributo
         self.optimal_areas = optimal_areas if optimal_areas is not None else []# Inicializamos optimal_areas - Nuevo atributo
 
+        # Areas
         self.selected_area = None # Inicializamos el área seleccionada
+        self.area_names = {} #Diccionario para almacenar nombres de las areas
+        self.typing_name = False #Inicializa si el usuario esta escribiendo algo
+        self.current_text = "" #Almacena el texto que el usuario esta haciendo
 
         # Botones para cambiar el color
         self.bg_color_button_rect = pygame.Rect(self.grid_section_rect.left + 20, self.grid_section_rect.bottom + 60, 180, 30) # Nuevo
@@ -221,15 +225,12 @@ class Interface:
             # --- Manejo de la activación del input del elemento del área ---
             elif self.element_input_rect.collidepoint(event.pos):
                 self.element_input_active = True
-            else:
-                self.element_input_active = False
-
+                
+            mouse_x, mouse_y = event.pos
+            self.selected_area = None
             # --- Lógica para detectar clic en un área ---
-            if self.optimal_tree_index is not None and self.current_tree_index == self.optimal_tree_index:
-                mouse_x, mouse_y = event.pos
-                print(f"Clic en: ({mouse_x}, {mouse_y})")
+            if self.optimal_tree_index is not None and self.current_tree_index == self.optimal_tree_index: #Para que siempre sea el optimo
                 for area_obj in self.optimal_areas:
-                    
                     scaled_points =[]
                     if self.x_min is not None and self.x_max is not None and self.y_min is not None and self.y_max is not None and self.grid_section_rect:
                         range_x = self.x_max - self.x_min
@@ -243,14 +244,15 @@ class Interface:
                                 scaled_points.append((int(scaled_x), int(scaled_y)))
 
                             if scaled_points:
-                                print(f"Puntos escalados del área: {scaled_points}") # Imprimir los puntos escalados de cada área
+                                # Imprimir los puntos escalados de cada área
                                 polygon = pygame.draw.polygon(self.screen, (0, 0, 0), scaled_points, 0)
                                 if polygon.collidepoint(mouse_x, mouse_y):
                                     self.selected_area = area_obj
+                                    self.typing_name = True # Habilita el modo de escritura
+                                    self.current_text = "" #Reinicia el texto
                                     print("Área seleccionada:", self.selected_area)
                                     break
-                    print(f"Puntos escalados para el área: {scaled_points}")
-                    
+                                                    
             # Nueva funcionalidad: verificar si se clickea un punto
             self.verificar_seleccion(event.pos)           
                   
@@ -273,22 +275,45 @@ class Interface:
                     self.input_list_str = self.input_list_str[:-1]
                 else:
                     self.input_list_str += event.unicode
+                    
             # --- Manejo de la entrada de texto para el elemento del área ---
             elif self.element_input_active:
                 if event.key == pygame.K_RETURN:
+                    print(f"🔠 Texto ingresado: {self.element_input_text}")  # Verifica qué texto ingresaste
+                    print(f"📌 Área seleccionada: {self.selected_area}")  # ¿Es `None`?
+                    
                     self.element_input_active = False
-                    if self.element_input_text:
+                    if self.element_input_text: #Evitar entradas vacias
                         first_letter = self.element_input_text[0].upper()
+                        
                         for area_obj in self.optimal_areas:
-                            if area_obj == self.selected_area: # Aplicar solo al área seleccionada
+                            print(f"🔍 Comparando con área: {area_obj}")  # Verifica si `selected_area` está en `optimal_areas`
+
+                            if area_obj == self.selected_area:
+                                print(f"✅ Guardando '{first_letter}' en {area_obj}")
                                 if not area_obj.elementos_graficos:
-                                    area_obj.elementos_graficos =[]# Inicializa la lista si aún no existe
+                                    area_obj.elementos_graficos = []
                                 area_obj.elementos_graficos.append(first_letter)
-                        self.element_input_text = ""
+                                
+                    self.element_input_text = ""
+                        
                 elif event.key == pygame.K_BACKSPACE:
                     self.element_input_text = self.element_input_text[:-1]
                 else:
                     self.element_input_text += event.unicode
+                    
+            #---- Manejo de la entrada de texto para nombrar un area  
+            elif self.typing_name:
+                if event.key == pygame.K_RETURN:
+                    self.typing_name = False
+                    if self.current_text:
+                        self.selected_area.nombre = self.current_text
+                    self.current_text = ""
+                    
+                elif event.key == pygame.K_BACKSPACE:
+                    self.current_text = self.current_text[:-1]
+                else:
+                    self.current_text += event.unicode  
                     
     def show_area_naming_dialog(self):
         if not self.selected_area:
@@ -425,7 +450,7 @@ class Interface:
                 #print("Contenido de self.optimal_areas:", self.optimal_areas) 
 
                 for area_obj in self.optimal_areas:
-                    print(f"Propiedades del área: {area_obj.__dict__}")
+                    print(f"Area {area_obj} - Elementos graficos: {area_obj.elementos_graficos}")
                     # Paso 8: Inicializa una lista vacía para almacenar los puntos escalados del área actual.
                     scaled_points =[]
                      # Paso 9: Itera sobre cada punto (x, y) en la lista de límites del área actual.
@@ -456,33 +481,26 @@ class Interface:
                         # Paso 16: Dibuja el borde del polígono utilizando los mismos puntos escalados y el color del borde, con un grosor de 2 píxeles.
                         pygame.draw.polygon(self.screen, borde, scaled_points, 2)
 
-                        # Paso 17: Verifica si el objeto 'area_obj' tiene elementos gráficos asociados (por ejemplo, una etiqueta).
-                        """if area_obj.elementos_graficos and isinstance(area_obj.elementos_graficos, list) and area_obj.elementos_graficos[0]:
-                            # Paso 18: Configura la fuente para la etiqueta.
-                            font = pygame.font.Font(None, 36)
-                            # Paso 19: Obtiene el texto de la etiqueta del primer elemento de la lista.
-                            label_text = area_obj.elementos_graficos[0]
-                            # Paso 20: Renderiza el texto en una superficie.
-                            text_surface = font.render(label_text, True, (0, 0, 0))
-                            # Paso 21: Calcula las coordenadas centrales del área para ubicar la etiqueta.
-                            center_x = int(self.grid_section_rect.left + 10 + (sum(p[0] for p in area_obj.limites) / len(area_obj.limites) - self.x_min) * scale_x)
-                            center_y = int(self.grid_section_rect.bottom - 10 - (sum(p[1] for p in area_obj.limites) / len(area_obj.limites) - self.y_min) * scale_y)
-                            # Paso 22: Obtiene el rectángulo que delimita la superficie del texto y lo centra en las coordenadas calculadas.
-                            text_rect = text_surface.get_rect(center=(center_x, center_y))
-                            # Paso 23: Dibuja la superficie del texto (la etiqueta) en la pantalla en la posición calculada.
-                            self.screen.blit(text_surface, text_rect)"""
-                        if area_obj.elementos_graficos and isinstance(area_obj.elementos_graficos, list):
-                            font = pygame.font.Font(None, 36)
-                            center_x = int(self.grid_section_rect.left + 10 + (sum(p[0] for p in area_obj.limites) / len(area_obj.limites) - self.x_min) * scale_x)
-                            center_y = int(self.grid_section_rect.bottom - 10 - (sum(p[1] for p in area_obj.limites) / len(area_obj.limites) - self.y_min) * scale_y)
-                            y_offset = 0  # Para dibujar elementos en diferentes líneas verticales
+                        center_x = int(self.grid_section_rect.left + 10 + (sum(p[0] for p in area_obj.limites) / len(area_obj.limites) - self.x_min) * scale_x)
+                        center_y = int(self.grid_section_rect.bottom - 10 - (sum(p[1] for p in area_obj.limites) / len(area_obj.limites) - self.y_min) * scale_y)
+                        
+                        if hasattr(area_obj, 'nombre') and area_obj.nombre:
+                            font = pygame.font.Font(None, 30)
+                            name_surface = font.render(area_obj.nombre, True, (0,0,0))
+                            name_rect = name_surface.get_rect(center=(center_x, center_y - 15))  # Ajuste para separar del elemento gráfico
+                            self.screen.blit(name_surface, name_rect)
+                            
+                            if area_obj.elementos_graficos and isinstance(area_obj.elementos_graficos, list):
+                                font = pygame.font.Font(None, 36)
+                                y_offset = 15
 
-                            for elemento in area_obj.elementos_graficos:
-                                if elemento:
-                                    text_surface = font.render(elemento, True, (0, 0, 0))
-                                    text_rect = text_surface.get_rect(center=(center_x, center_y + y_offset))
-                                    self.screen.blit(text_surface, text_rect)
-                                    y_offset += 20  # Ajusta este valor para el espaciado vertical entre elementos    
+                                for elemento in area_obj.elementos_graficos:
+                                    if elemento:
+                                        text_surface = font.render(elemento, True, (0, 0, 0))
+                                        text_rect = text_surface.get_rect(center=(center_x, center_y + y_offset))
+                                        self.screen.blit(text_surface, text_rect)
+                                        y_offset += 20  # Ajusta este valor para el espaciado vertical entre elementos    
+    
     def dibujar_lineas_plano(self):
         """Dibuja las líneas del plano y su primer punto en la sección derecha (cuadrícula)."""
         line_color = (0, 0, 0) # Negro para las líneas
@@ -766,6 +784,7 @@ class Interface:
         self.dibujar_lineas_plano()
 
         self.draw_areas()
+        
         self.draw_points()
         # Dibujar el botón "Mostrar Óptimo"
         pygame.draw.rect(self.screen, self.blue, self.optimal_button_rect)

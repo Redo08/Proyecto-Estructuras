@@ -4,8 +4,8 @@ from src.models.arbol import Nodo, Arbol
 # Configuración de pantalla
 WIDTH, HEIGHT = 800, 600
 NODE_RADIUS = 20
-LINE_COLOR = (0, 0, 0)
-NODE_COLOR = (132, 0, 0)
+LINE_COLOR = (132, 0, 0)
+NODE_COLOR = (0, 128, 128)
 BACKGROUND_COLOR = (255, 255, 255)
 longitu_conexion=50
 
