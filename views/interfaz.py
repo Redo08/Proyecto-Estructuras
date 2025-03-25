@@ -278,10 +278,10 @@ class Interface:
                 if event.key == pygame.K_RETURN:
                     self.element_input_active = False
                     if self.element_input_text:
-                        first_letter = self.element_input_text[0].upper()
+                        #first_letter = self.element_input_text[0].upper()
                         for area_obj in self.optimal_areas:
                             if area_obj == self.selected_area: # Aplicar solo al área seleccionada
-                                area_obj.elementos_graficos = [first_letter]
+                                area_obj.nombre = self.element_input_text
                         self.element_input_text = ""
                 elif event.key == pygame.K_BACKSPACE:
                     self.element_input_text = self.element_input_text[:-1]
@@ -386,7 +386,7 @@ class Interface:
                 #print("Contenido de self.optimal_areas:", self.optimal_areas) 
 
                 for area_obj in self.optimal_areas:
-                    print(f"Propiedades del área: {area_obj.__dict__}")
+                    #print(f"Propiedades del área: {area_obj.__dict__}")
                     # Paso 8: Inicializa una lista vacía para almacenar los puntos escalados del área actual.
                     scaled_points =[]
                      # Paso 9: Itera sobre cada punto (x, y) en la lista de límites del área actual.
@@ -417,22 +417,23 @@ class Interface:
                         # Paso 16: Dibuja el borde del polígono utilizando los mismos puntos escalados y el color del borde, con un grosor de 2 píxeles.
                         pygame.draw.polygon(self.screen, borde, scaled_points, 2)
 
-                        # Paso 17: Verifica si el objeto 'area_obj' tiene elementos gráficos asociados (por ejemplo, una etiqueta).
-                        if area_obj.elementos_graficos and isinstance(area_obj.elementos_graficos, list) and area_obj.elementos_graficos[0]:
-                            # Paso 18: Configura la fuente para la etiqueta.
-                            font = pygame.font.Font(None, 36)
-                            # Paso 19: Obtiene el texto de la etiqueta del primer elemento de la lista.
-                            label_text = area_obj.elementos_graficos[0]
-                            # Paso 20: Renderiza el texto en una superficie.
-                            text_surface = font.render(label_text, True, (0, 0, 0))
-                            # Paso 21: Calcula las coordenadas centrales del área para ubicar la etiqueta.
-                            center_x = int(self.grid_section_rect.left + 10 + (sum(p[0] for p in area_obj.limites) / len(area_obj.limites) - self.x_min) * scale_x)
-                            center_y = int(self.grid_section_rect.bottom - 10 - (sum(p[1] for p in area_obj.limites) / len(area_obj.limites) - self.y_min) * scale_y)
-                            # Paso 22: Obtiene el rectángulo que delimita la superficie del texto y lo centra en las coordenadas calculadas.
-                            text_rect = text_surface.get_rect(center=(center_x, center_y))
-                            # Paso 23: Dibuja la superficie del texto (la etiqueta) en la pantalla en la posición calculada.
-                            self.screen.blit(text_surface, text_rect)
-                            
+                        # Paso 17: Verifica si el objeto 'area_obj' tiene un nombre y lo dibuja
+        if area_obj.nombre:
+            font = pygame.font.Font(None, 36)
+            if isinstance(area_obj.nombre, list) and area_obj.nombre:
+                label_text = area_obj.nombre[0]
+            elif isinstance(area_obj.nombre, str):
+                label_text = area_obj.nombre
+            else:
+                label_text = "" # Si no es ni lista ni string, o está vacío
+
+            if label_text:
+                text_surface = font.render(label_text, True, (0, 0, 0))
+                center_x = int(self.grid_section_rect.left + 10 + (sum(p[0] for p in area_obj.limites) / len(area_obj.limites) - self.x_min) * scale_x)
+                center_y = int(self.grid_section_rect.bottom - 10 - (sum(p[1] for p in area_obj.limites) / len(area_obj.limites) - self.y_min) * scale_y)
+                text_rect = text_surface.get_rect(center=(center_x, center_y))
+                self.screen.blit(text_surface, text_rect)
+                                
     def dibujar_lineas_plano(self):
         """Dibuja las líneas del plano y su primer punto en la sección derecha (cuadrícula)."""
         line_color = (0, 0, 0) # Negro para las líneas

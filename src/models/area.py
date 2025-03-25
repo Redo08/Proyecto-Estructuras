@@ -1,6 +1,6 @@
 class Area:
     def __init__(self, limites, area): #Nombre String, Limites es una lista, color_fondo String, color_borde String
-        self.nombre = None
+        self.nombre = ""
         self.limites = limites
         self.color_fondo = None
         self.color_borde = None
