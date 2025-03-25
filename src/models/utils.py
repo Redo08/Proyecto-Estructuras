@@ -65,6 +65,8 @@ class Utils:
     def permutaciones_unique_puntos(self, solucion_unicas_puntos):
         return self.generar_permutaciones(solucion_unicas_puntos, 1)
     
+    def area_optima_para_lista(self, lista_de_puntos): # Para cuando lo necesito para solo una lista
+        return self.areas_optimas([lista_de_puntos])  # Lo envuelve en una lista
     
     def areas_optimas(self, listas_permutaciones_unique): # Lista de arboles únicos 
         area = []

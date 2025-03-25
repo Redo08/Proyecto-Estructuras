@@ -25,7 +25,7 @@ class Interface:
         self.font_small = pygame.font.Font(None, 16) # Fuente más pequeña para las etiquetas de la cuadrícula
 
         self.points =[]
-        self.radio_punto = 3
+        self.radio_punto = 5
         self.input_list_str = ""
         self.input_active_list = False
         self.input_rect_list = pygame.Rect(180, 50, 400, 30) #(x,y, ancho pix, larg pix)
@@ -147,8 +147,8 @@ class Interface:
         pygame.display.flip()
         
     def handle_input(self, event):
+        print("🖱️ handle_input activado")  # Ver si se llama muchas veces
         if event.type == pygame.MOUSEBUTTONDOWN:
-            
             if self.input_rect_list.collidepoint(event.pos):
                 self.input_active_list = True
             else:
@@ -208,30 +208,6 @@ class Interface:
                 else:
                     self.input_list_str += event.unicode
 
-    def verificar_seleccion(self, pos):
-        """Verifica si el usuario hizo clic en un punto"""
-        x, y = self.transformar_coordenadas(pos)  # Convertimos coordenadas
-
-        # Si la transformación falló, salimos
-        if x is None or y is None:
-            print("🚫 No se puede verificar selección porque las coordenadas son inválidas.")
-            return  
-
-        print(f"🖱️ Verificando clic en coordenadas transformadas: ({x}, {y})") 
-
-        for i, (px, py) in enumerate(self.points):
-            distancia = ((x - px) ** 2 + (y - py) ** 2) ** 0.5
-            print(f"🔍 Punto {i}: ({px}, {py}) - Distancia al clic: {distancia}")  
-
-            if distancia < self.radio_punto:
-                self.punto_seleccionado = i
-                print(f"✅ Punto {i} seleccionado!")
-                return
-
-        self.punto_seleccionado = None
-        print("❌ Ningún punto seleccionado")
-
-
     def actualizar_lista_puntos(self):
         print("⚙️ Entrando a actualizar_lista_puntos")
         print(f"🔄 Antes de actualizar: current_tree_index = {self.current_tree_index}")
@@ -252,22 +228,17 @@ class Interface:
             # Llamar nuevamente a los cálculos de árboles y líneas
             utils = Utils()
             arboles = utils.permutaciones_unique_arbol(self.points)
-            puntos = utils.permutaciones_unique_puntos(self.points)
             lineas = utils.generar_todas_las_lineas_por_arbol(arboles)
 
             # Cargar y graficar nuevamente
             self.cargar_y_graficar_arboles(arboles, lineas)
 
             # Actualizar el árbol óptimo
-            index = utils.areas_optimas(puntos)
+            index = utils.area_optima_para_lista(self.points)
             self.set_optimal_tree_index(index)
-            
-            print(f"🔍 Nuevo índice óptimo después de mover puntos: {self.optimal_tree_index}")
-
             
         print(f"📌 Después de actualizar: current_tree_index = {self.current_tree_index}")
         print("✅ Saliendo de actualizar_lista_puntos")
-        
     def process_point_list(self):
         try:
             # Evaluamos la cadena como una lista literal de Python
@@ -322,40 +293,19 @@ class Interface:
         self.y_min = y_min
         self.y_max = y_max
 
-    def transformar_coordenadas(self, pos):
-        """Convierte coordenadas de pantalla a coordenadas del gráfico"""
-        if self.x_min is None or self.x_max is None or self.y_min is None or self.y_max is None:
-            print("⚠️ Error: Los límites del plano aún no han sido definidos.")
-            return None, None
+    def verificar_seleccion(self, pos):
+        for i, (x, y) in enumerate(self.points):
+            distancia = ((pos[0] - x) ** 2 + (pos[1] - y) ** 2) ** 0.5
+            if distancia < self.radio_punto:  # radio_punto es el radio visual del punto
+                self.punto_seleccionado = i  # Guardamos el índice del punto seleccionado
+                return
+        self.punto_seleccionado = None  # Si no hizo clic en ningún punto, no selecciona nada
 
-        x_pantalla, y_pantalla = pos
-
-        # Transformación corregida
-        x_grafico = (x_pantalla - self.grid_section_rect.left) * (self.x_max - self.x_min) / self.grid_section_rect.width + self.x_min
-        y_grafico = self.y_max - ((y_pantalla - self.grid_section_rect.top) * (self.y_max - self.y_min) / self.grid_section_rect.height)
-
-        print(f"🔄 Transformación: {pos} -> ({x_grafico}, {y_grafico})")  
-        return x_grafico, y_grafico
+    def mover_punto(self,pos):
+        if self.punto_seleccionado is not None:  # Solo mueve si hay un punto seleccionado
+            self.points[self.punto_seleccionado] = pos  # Actualiza la posición
+            
     
-    def mover_punto(self, pos):
-        """Mueve el punto seleccionado al arrastrar el mouse"""
-        if self.punto_seleccionado is None:
-            return
-
-        x, y = self.transformar_coordenadas(pos)  # Convertimos a coordenadas del gráfico
-
-        # 🔒 Asegurar que no se salga del rango permitido
-        x = max(self.x_min, min(x, self.x_max))
-        y = max(self.y_min, min(y, self.y_max))
-
-        print(f"✏️ Moviendo punto {self.punto_seleccionado} a ({x}, {y})")  
-        self.points[self.punto_seleccionado] = (x, y)
-
-    
-    def soltar_punto(self):
-        """Se llama cuando el usuario suelta el mouse"""
-        if self.punto_seleccionado is not None:
-            print(f"✅ Punto {self.punto_seleccionado} fijado en {self.points[self.punto_seleccionado]}")
     def draw_grid_with_labels(self, screen):
 
         """Dibuja la cuadrícula con etiquetas en la sección derecha."""
@@ -378,7 +328,7 @@ class Interface:
 
                 # Dibujar líneas verticales y etiquetas del eje X
                 
-                num_x_segments = int(self.x_max) # Puedes ajustar la cantidad de segmentos
+                num_x_segments = self.x_max # Puedes ajustar la cantidad de segmentos
                 if num_x_segments > 0:
                     x_step = range_x / num_x_segments
                     for i in range(num_x_segments + 1):
@@ -394,7 +344,7 @@ class Interface:
                 # Dibujar líneas horizontales y etiquetas del eje Y
                 
                 
-                num_y_segments = int(self.y_max) # Puedes ajustar la cantidad de segmentos
+                num_y_segments = self.y_max # Puedes ajustar la cantidad de segmentos
                 if num_y_segments > 0:
                     y_step = range_y / num_y_segments
                     for i in range(num_y_segments + 1):
