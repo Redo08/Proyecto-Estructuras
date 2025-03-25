@@ -450,23 +450,55 @@ class Interface:
                 # Iterar sobre la lista correcta de líneas
                 if self.all_lines_list and 0 <= self.current_tree_index < len(self.all_lines_list):
                     lineas_para_arbol_actual = self.all_lines_list[self.current_tree_index]
-                    for linea in lineas_para_arbol_actual:
-                        punto, punto_inicial, punto_final = linea
+                    max_line_index = len(lineas_para_arbol_actual) -1
+                    
+                    #Inicializamos si el tiempo no existe
+                    if not hasattr(self, 'line_animation_data'):
+                        self.line_animation_data = {
+                            'start_time': pygame.time.get_ticks(),
+                            'last_added_index': -1,
+                            'visible_lines': []
+                        }
+                    
+                    
+                    # Tiempo transcurrido desde el inicio
+                    current_time = pygame.time.get_ticks()
+                    elapsed = current_time - self.line_animation_data['start_time']
+                    draw_interval = 1000  # 1 segundo entre líneas (ajustable)
 
+                    # Calcular cuántas líneas deberían estar visibles
+                    should_show_count = min(int(elapsed / draw_interval) + 1, max_line_index + 1)
+
+                    # Añadir nuevas líneas si es necesario
+                    while self.line_animation_data['last_added_index'] < should_show_count - 1:
+                        next_index = self.line_animation_data['last_added_index'] + 1
+                        if next_index > max_line_index:
+                            break
+
+                        punto, punto_inicial, punto_final = lineas_para_arbol_actual[next_index]
+                    
                         # Calcular las coordenadas en la cuadrícula
-                        x1_line = self.grid_section_rect.left + padding + (punto_inicial[0] - self.x_min) * scale_x
-                        y1_line = self.grid_section_rect.bottom - padding - (punto_inicial[1] - self.y_min) * scale_y
-                        x2_line = self.grid_section_rect.left + padding + (punto_final[0] - self.x_min) * scale_x
-                        y2_line = self.grid_section_rect.bottom - padding - (punto_final[1] - self.y_min) * scale_y
-
-                        # Dibujar la línea
-                        pygame.draw.line(self.screen, line_color, (int(x1_line), int(y1_line)), (int(x2_line), int(y2_line)), line_thickness)
-
-                        # Dibujar el primer punto
-                        x_point = self.grid_section_rect.left + padding + (punto[0] - self.x_min) * scale_x
-                        y_point = self.grid_section_rect.bottom - padding - (punto[1] - self.y_min) * scale_y
-                        pygame.draw.circle(self.screen, point_color, (int(x_point), int(y_point)), point_radius)
-    
+                        x1 = self.grid_section_rect.left + padding + (punto_inicial[0] - self.x_min) * scale_x
+                        y1 = self.grid_section_rect.bottom - padding - (punto_inicial[1] - self.y_min) * scale_y
+                        x2 = self.grid_section_rect.left + padding + (punto_final[0] - self.x_min) * scale_x
+                        y2 = self.grid_section_rect.bottom - padding - (punto_final[1] - self.y_min) * scale_y
+                        xp = self.grid_section_rect.left + padding + (punto[0] - self.x_min) * scale_x
+                        yp = self.grid_section_rect.bottom - padding - (punto[1] - self.y_min) * scale_y
+                        
+                        
+                        # Almacenar datos de la línea (coordenadas convertidas)
+                        self.line_animation_data['visible_lines'].append({
+                            'line': ((x1, y1), (x2, y2)),
+                            'point': (xp, yp)
+                        })
+                        self.line_animation_data['last_added_index'] = next_index
+                        
+                        
+                # Dibujar todas las líneas visibles
+                for line_data in self.line_animation_data['visible_lines']:
+                    pygame.draw.line(self.screen, line_color, (int(line_data['line'][0][0]), int(line_data['line'][0][1])),(int(line_data['line'][1][0]), int(line_data['line'][1][1])),line_thickness)
+                    
+                            
     def establecer_limites_plano(self, x_min, x_max, y_min, y_max):
         self.x_min = x_min
         self.x_max = x_max
