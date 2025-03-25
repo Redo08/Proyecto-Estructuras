@@ -197,6 +197,7 @@ class Interface:
             elif self.last_button_rect.collidepoint(event.pos):
                 if self.tree_list:
                     self.current_tree_index = len(self.tree_list) - 1
+                    
             # --- Manejo del clic en el botón "Mostrar Óptimo" ---
             elif self.optimal_button_rect.collidepoint(event.pos):
                 if self.optimal_tree_index is not None:
