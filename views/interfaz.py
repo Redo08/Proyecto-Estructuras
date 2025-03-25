@@ -797,7 +797,8 @@ class Interface:
 
         pygame.draw.rect(self.screen, self.blue, self.outline_color_button_rect) # Nuevo
         pygame.draw.rect(self.screen, self.black, self.outline_color_button_rect, 2) # Nuevo
-        self.screen.blit(self.outline_color_button_text, self.bg_color_button_text_rect) # Nuevo - Corregido a outline_color_button_text_rect
+        self.screen.blit(self.outline_color_button_text, self.outline_color_button_text_rect) # Nuevo - Corregido a outline_color_button_text_rect
+        
 
         # Dibujar entrada de texto para el elemento
         self.screen.blit(self.element_input_label, (self.element_input_rect.left - self.element_input_label.get_width() - 5, self.element_input_rect.centery - self.element_input_label.get_height() // 2)) # Nuevo
