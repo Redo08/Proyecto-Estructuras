@@ -124,3 +124,14 @@ class Utils:
             area_obj=Area(limites,valor)
             areas.append(area_obj)
         return areas
+
+    def conversion_areas(self, area, tipo): #Se ingresa el area, y el tipo al que se quiere hacer la conversión
+        #El area esta incialmente en m^2, pasarlo a centimetros, pies y pulgadas
+        if tipo == 0: #Centimetros
+            return area*100 # 1 metro son 100 cm
+        
+        elif tipo == 1: #Pies
+            return area*3.28084
+    
+        elif tipo == 2: # Pulgadas
+            return area* 39.37

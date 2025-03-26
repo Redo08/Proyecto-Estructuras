@@ -97,6 +97,7 @@ class Interface:
         self.area_names = {} #Diccionario para almacenar nombres de las areas
         self.typing_name = False #Inicializa si el usuario esta escribiendo algo
         self.current_text = "" #Almacena el texto que el usuario esta haciendo
+        
 
         # Botones para cambiar el color
         self.bg_color_button_rect = pygame.Rect(self.grid_section_rect.left + 20, self.grid_section_rect.bottom + 60, 180, 30) # Nuevo
@@ -279,16 +280,12 @@ class Interface:
             # --- Manejo de la entrada de texto para el elemento del área ---
             elif self.element_input_active:
                 if event.key == pygame.K_RETURN:
-                    print(f"🔠 Texto ingresado: {self.element_input_text}")  # Verifica qué texto ingresaste
-                    print(f"📌 Área seleccionada: {self.selected_area}")  # ¿Es `None`?
-                    
                     self.element_input_active = False
                     if self.element_input_text: #Evitar entradas vacias
                         first_letter = self.element_input_text[0].upper()
                         
                         for area_obj in self.optimal_areas:
-                            print(f"🔍 Comparando con área: {area_obj}")  # Verifica si `selected_area` está en `optimal_areas`
-
+                            
                             if area_obj == self.selected_area:
                                 print(f"✅ Guardando '{first_letter}' en {area_obj}")
                                 if not area_obj.elementos_graficos:
@@ -489,7 +486,7 @@ class Interface:
                             name_surface = font.render(area_obj.nombre, True, (0,0,0))
                             name_rect = name_surface.get_rect(center=(center_x, center_y - 15))  # Ajuste para separar del elemento gráfico
                             self.screen.blit(name_surface, name_rect)
-                            
+                        
                             if area_obj.elementos_graficos and isinstance(area_obj.elementos_graficos, list):
                                 font = pygame.font.Font(None, 36)
                                 y_offset = 15
@@ -501,6 +498,18 @@ class Interface:
                                         self.screen.blit(text_surface, text_rect)
                                         y_offset += 20  # Ajusta este valor para el espaciado vertical entre elementos    
     
+                        if hasattr(area_obj, 'area') and isinstance(area_obj.area, (int, float)):
+                            font = pygame.font.Font(None, 24)  # Un poco más pequeño que el nombre
+                            area_text = f"{area_obj.area:.2f} m\u00B2"  # Formateamos con 2 decimales
+                            area_surface = font.render(area_text, True, (0, 0, 0))
+
+                            # Calcular la posición Y más arriba del polígono
+                            top_y = min(scaled_points, key=lambda p: p[1])[1] + 10  # Punto más alto - pequeño margen
+                            area_rect = area_surface.get_rect(center=(center_x, top_y))
+
+                            self.screen.blit(area_surface, area_rect)
+                            
+                            
     def dibujar_lineas_plano(self):
         """Dibuja las líneas del plano y su primer punto en la sección derecha (cuadrícula)."""
         line_color = (0, 0, 0) # Negro para las líneas
