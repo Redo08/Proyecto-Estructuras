@@ -40,7 +40,7 @@ class Interface:
         self.load_json_button_text_rect = self.load_json_button_text.get_rect(center=self.load_json_button_rect.center)
 
         # Nuevo botón para sacar el area otpima
-        #self.load_json_button_rect = pygame.Rect()
+        
 
         # Nueva sección para los árboles
         self.tree_list = tree_list if tree_list is not None else [] #Se almacena la lista de los arboles
@@ -119,16 +119,20 @@ class Interface:
         self.punto_seleccionado = None
 
         # --- Nuevos botones para cm, in, ft ---
-        self.cm_button_rect = pygame.Rect(self.input_rect_list.right + 10, self.input_rect_list.top, 50, 30)
-        self.in_button_rect = pygame.Rect(self.cm_button_rect.right + 5, self.input_rect_list.top, 50, 30)
-        self.ft_button_rect = pygame.Rect(self.in_button_rect.right + 5, self.input_rect_list.top, 50, 30)
+        # --- Nuevos botones para cm, in, ft al lado de "Anotar Elemento" ---
+        button_y = self.element_input_rect.top  # La misma altura que el input de anotar elemento
+        self.cm_button_rect = pygame.Rect(self.element_input_rect.right + 10, button_y, 50, 30)
+        self.in_button_rect = pygame.Rect(self.cm_button_rect.right + 5, button_y, 50, 30)
+        self.ft_button_rect = pygame.Rect(self.in_button_rect.right + 5, button_y, 50, 30)
 
         self.cm_button_text = self.font.render("cm", True, self.white)
-        self.in_button_text = self.font.render("in", True, self.white)
+        self.in_button_text = self.font.render("m", True, self.white)
         self.ft_button_text = self.font.render("ft", True, self.white)
         self.cm_active = False
         self.in_active = False
         self.ft_active = False
+        self.current_unit = 'm'
+        
 
     # Nuevo método para establecer los límites del plano
     def establecer_limites_plano(self, x_min, x_max, y_min, y_max):
@@ -267,7 +271,16 @@ class Interface:
                                                     
             # Nueva funcionalidad: verificar si se clickea un punto
             self.verificar_seleccion(event.pos)           
-                  
+              # --- Manejo de los botones de unidades (cm, m, ft) ---
+            if self.cm_button_rect.collidepoint(event.pos):
+                self.current_unit = 'cm'
+                print("Unidad cambiada a cm²")
+            elif self.in_button_rect.collidepoint(event.pos):
+                self.current_unit = 'm'
+                print("Unidad cambiada a m^2")
+            elif self.ft_button_rect.collidepoint(event.pos):
+                self.current_unit = 'ft'
+                print("Unidad cambiada a ft²")    
         elif event.type == pygame.MOUSEMOTION:
             if self.punto_seleccionado is not None:  
                 self.mover_punto(event.pos) 
@@ -298,7 +311,7 @@ class Interface:
                         for area_obj in self.optimal_areas:
                             
                             if area_obj == self.selected_area:
-                                print(f"✅ Guardando '{first_letter}' en {area_obj}")
+                                print(f"Guardando '{first_letter}' en {area_obj}")
                                 if not area_obj.elementos_graficos:
                                     area_obj.elementos_graficos = []
                                 area_obj.elementos_graficos.append(first_letter)
@@ -511,7 +524,20 @@ class Interface:
     
                         if hasattr(area_obj, 'area') and isinstance(area_obj.area, (int, float)):
                             font = pygame.font.Font(None, 24)  # Un poco más pequeño que el nombre
-                            area_text = f"{area_obj.area:.2f} m\u00B2"  # Formateamos con 2 decimales
+                            area_value = area_obj.area
+                            unit_text = " m\u00B2"
+
+                            if self.current_unit == 'cm':
+                                area_value *= 10000  # Convertir de m² a cm²
+                                unit_text = " cm\u00B2"
+                            elif self.current_unit == 'm':
+                                area_value *= 1  # Convertir de m² a in² (aproximado)
+                                unit_text = " m\u00B2"
+                            elif self.current_unit == 'ft':
+                                area_value *= 10.7639  # Convertir de m² a ft² (aproximado)
+                                unit_text = " ft\u00B2"
+
+                            area_text = f"{area_value:.2f}{unit_text}"
                             area_surface = font.render(area_text, True, (0, 0, 0))
 
                             # Calcular la posición Y más arriba del polígono
@@ -820,7 +846,7 @@ class Interface:
         self.ft_button_rect = pygame.Rect(self.in_button_rect.right + 5, button_y, 50, 30)
 
         self.cm_button_text = self.font.render("cm", True, self.white)
-        self.in_button_text = self.font.render("in", True, self.white)
+        self.in_button_text = self.font.render("m", True, self.white)
         self.ft_button_text = self.font.render("ft", True, self.white)
         self.cm_active = False
         self.in_active = False
