@@ -467,7 +467,6 @@ class Interface:
                 #print("Contenido de self.optimal_areas:", self.optimal_areas) 
 
                 for area_obj in self.optimal_areas:
-                    print(f"Area {area_obj} - Elementos graficos: {area_obj.elementos_graficos}")
                     # Paso 8: Inicializa una lista vacía para almacenar los puntos escalados del área actual.
                     scaled_points =[]
                      # Paso 9: Itera sobre cada punto (x, y) en la lista de límites del área actual.
