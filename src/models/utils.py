@@ -84,11 +84,11 @@ class Utils:
             lista_vertical, lista_horizontal = plano.generar_lineas()
             
             posibles_areas = plano.puntos_areas(lista_vertical, lista_horizontal)
-            print("--------------------------------------------")
-            print("Permutacion correspondiente", i)
-            print("Areas posibles: ",posibles_areas)
-            print("Tamaño areas posibles: ", len(posibles_areas))
-            print("-------------------------------------------")
+            #print("--------------------------------------------")
+            #print("Permutacion correspondiente", i)
+            #print("Areas posibles: ",posibles_areas)
+            #print("Tamaño areas posibles: ", len(posibles_areas))
+            #print("-------------------------------------------")
             if not area or len(posibles_areas) < len(area):
                 area = posibles_areas
                 arbol_optimo = arbol
@@ -98,8 +98,8 @@ class Utils:
         
         lista_areas_optimas=self.lista_areas(area)
         
-        print("El arbol optimo es:", arbol_optimo)
-        print("El area final es:", area, "Con tamaño", len(area)) 
+        #print("El arbol optimo es:", arbol_optimo)
+        #print("El area final es:", area, "Con tamaño", len(area)) 
         return index_final, lista_areas_optimas
     
     def generar_todas_las_lineas_por_arbol(self, lista_de_arboles):

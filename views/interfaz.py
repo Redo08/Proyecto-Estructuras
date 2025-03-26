@@ -211,20 +211,16 @@ class Interface:
 
             # --- Manejo de los botones de navegación de árboles ---
             if self.first_button_rect.collidepoint(event.pos):
-                print("⏮️ Botón Primero presionado")
                 self.current_tree_index = 0
             elif self.prev_button_rect.collidepoint(event.pos):
                 if self.current_tree_index > 0:
                     self.current_tree_index -= 1
-                    print(f"⬅️ Botón Anterior, nuevo índice: {self.current_tree_index}")
             elif self.next_button_rect.collidepoint(event.pos):
                 if 0 <= self.current_tree_index < len(self.tree_list) - 1:
                     self.current_tree_index += 1
-                    print(f"➡️ Botón Siguiente, nuevo índice: {self.current_tree_index}")
             elif self.last_button_rect.collidepoint(event.pos):
                 if self.tree_list:
                     self.current_tree_index = len(self.tree_list) - 1
-                    print(f"⏭️ Botón Último, nuevo índice: {self.current_tree_index}")
          # --- Manejo del clic en el botón "Mostrar Óptimo" ---
             elif self.optimal_button_rect.collidepoint(event.pos):
                 if self.optimal_tree_index is not None:

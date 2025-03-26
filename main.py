@@ -27,7 +27,7 @@ if __name__ == "__main__":
             if event.type == pygame.KEYDOWN:  # Puedes usar otro evento o condición
                 if event.key == pygame.K_SPACE and not trees_loaded: # Ejemplo: al presionar ESPACIO
                     lista_de_puntos = interfaz.get_points()
-                    print("\nLista de puntos obtenida desde la interfaz:")
+                    # print("\nLista de puntos obtenida desde la interfaz:")
                     for punto in lista_de_puntos:
                         print(punto)
                     #Calcular los límites del plano inicial con la lista de puntos
@@ -39,7 +39,7 @@ if __name__ == "__main__":
                     x_max_plano = plano.x_max
                     y_min_plano = plano.y_min
                     y_max_plano = plano.y_max
-                    print(f"\nLímites iniciales del plano: x_min={x_min_plano}, x_max={x_max_plano}, y_min={y_min_plano}, y_max={y_max_plano}")
+                    #print(f"\nLímites iniciales del plano: x_min={x_min_plano}, x_max={x_max_plano}, y_min={y_min_plano}, y_max={y_max_plano}")
 
                 # Enviar los límites a la interfaz para configurar la gráfica y la cuadrícula
                     interfaz.establecer_limites_plano(x_min_plano, x_max_plano, y_min_plano, y_max_plano)
@@ -49,13 +49,13 @@ if __name__ == "__main__":
                     puntos = utils.permutaciones_unique_puntos(lista_de_puntos)
                     
                     lineas=utils.generar_todas_las_lineas_por_arbol(arboles)
-                    print("Las lineas son", lineas)
+                    #print("Las lineas son", lineas)
                     # Envía la lista de árboles a la interfaz usando el método cargar_y_graficar_arboles
                     interfaz.cargar_y_graficar_arboles(arboles,lineas)
                     # Cargar area optima
                     index,areas_optimas= utils.areas_optimas(puntos)
                     #print("las areas optimas son",areas_optimas)}
-                    print("Index:", index)
+                    #print("Index:", index)
                     interfaz.optimal_areas = areas_optimas
                     interfaz.set_optimal_tree_index(index)
                     trees_loaded = True
