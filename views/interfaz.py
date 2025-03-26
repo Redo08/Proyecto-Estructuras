@@ -116,7 +116,18 @@ class Interface:
         self.optimal_tree_index = None
         
         self.punto_seleccionado = None
-    # Nuevo método para establecer los límites del plano
+
+        # --- Nuevos botones para cm, in, ft ---
+        self.cm_button_rect = pygame.Rect(self.input_rect_list.right + 10, self.input_rect_list.top, 50, 30)
+        self.in_button_rect = pygame.Rect(self.cm_button_rect.right + 5, self.input_rect_list.top, 50, 30)
+        self.ft_button_rect = pygame.Rect(self.in_button_rect.right + 5, self.input_rect_list.top, 50, 30)
+
+        self.cm_button_text = self.font.render("cm", True, self.white)
+        self.in_button_text = self.font.render("in", True, self.white)
+        self.ft_button_text = self.font.render("ft", True, self.white)
+        self.cm_active = False
+        self.in_active = False
+        self.ft_active = False
 
     # Nuevo método para establecer los límites del plano
     def establecer_limites_plano(self, x_min, x_max, y_min, y_max):
@@ -592,16 +603,10 @@ class Interface:
                     y_point = self.grid_section_rect.bottom - padding - (point[1] - self.y_min) * scale_y
                     pygame.draw.circle(self.screen, point_color, (int(x_point), int(y_point)), point_radius)
 
-    def establecer_limites_plano(self, x_min, x_max, y_min, y_max):
-        self.x_min = x_min
-        self.x_max = x_max
-        self.y_min = y_min
-        self.y_max = y_max
-
     def transformar_coordenadas(self, pos):
         """Convierte coordenadas de pantalla a coordenadas del gráfico"""
         if self.x_min is None or self.x_max is None or self.y_min is None or self.y_max is None:
-            print("⚠️ Error: Los límites del plano aún no han sido definidos.")
+            print("Error: Los límites del plano aún no han sido definidos.")
             return None, None
 
         x_pantalla, y_pantalla = pos
@@ -610,7 +615,7 @@ class Interface:
         x_grafico = (x_pantalla - self.grid_section_rect.left) * (self.x_max - self.x_min) / self.grid_section_rect.width + self.x_min
         y_grafico = self.y_max - ((y_pantalla - self.grid_section_rect.top) * (self.y_max - self.y_min) / self.grid_section_rect.height)
 
-        print(f"🔄 Transformación: {pos} -> ({x_grafico}, {y_grafico})")  
+        print(f"Transformación: {pos} -> ({x_grafico}, {y_grafico})")  
         return x_grafico, y_grafico
     
     def mover_punto(self, pos):
@@ -620,18 +625,18 @@ class Interface:
 
         x, y = self.transformar_coordenadas(pos)  # Convertimos a coordenadas del gráfico
 
-        # 🔒 Asegurar que no se salga del rango permitido
+        # Asegurar que no se salga del rango permitido
         x = max(self.x_min, min(x, self.x_max))
         y = max(self.y_min, min(y, self.y_max))
 
-        print(f"✏️ Moviendo punto {self.punto_seleccionado} a ({x}, {y})")  
+        print(f"Moviendo punto {self.punto_seleccionado} a ({x}, {y})")  
         self.points[self.punto_seleccionado] = (x, y)
 
     
     def soltar_punto(self):
         """Se llama cuando el usuario suelta el mouse"""
         if self.punto_seleccionado is not None:
-            print(f"✅ Punto {self.punto_seleccionado} fijado en {self.points[self.punto_seleccionado]}")
+            print(f"Punto {self.punto_seleccionado} fijado en {self.points[self.punto_seleccionado]}")
             
     def draw_grid_with_labels(self, screen):
         """Dibuja la cuadrícula con etiquetas en la sección derecha."""
@@ -799,12 +804,37 @@ class Interface:
         pygame.draw.rect(self.screen, self.black, self.outline_color_button_rect, 2) # Nuevo
         self.screen.blit(self.outline_color_button_text, self.outline_color_button_text_rect) # Nuevo - Corregido a outline_color_button_text_rect
         
+        # --- Nuevos botones para cm, in, ft al lado de "Anotar Elemento" ---
+        button_y = self.element_input_rect.top  # La misma altura que el input de anotar elemento
+        self.cm_button_rect = pygame.Rect(self.element_input_rect.right + 10, button_y, 50, 30)
+        self.in_button_rect = pygame.Rect(self.cm_button_rect.right + 5, button_y, 50, 30)
+        self.ft_button_rect = pygame.Rect(self.in_button_rect.right + 5, button_y, 50, 30)
 
+        self.cm_button_text = self.font.render("cm", True, self.white)
+        self.in_button_text = self.font.render("in", True, self.white)
+        self.ft_button_text = self.font.render("ft", True, self.white)
+        self.cm_active = False
+        self.in_active = False
+        self.ft_active = False
+        
         # Dibujar entrada de texto para el elemento
         self.screen.blit(self.element_input_label, (self.element_input_rect.left - self.element_input_label.get_width() - 5, self.element_input_rect.centery - self.element_input_label.get_height() // 2)) # Nuevo
         pygame.draw.rect(self.screen, self.black, self.element_input_rect, 2) # Nuevo
         text_surface_element = self.font.render(self.element_input_text, True, self.black) # Nuevo
         self.screen.blit(text_surface_element, (self.element_input_rect.x + 5, self.element_input_rect.y + 5)) # Nuevo
+
+        # --- Dibujar los botones de unidades (cm, in, ft) ---
+        pygame.draw.rect(self.screen, self.blue, self.cm_button_rect)  # Fondo azul
+        pygame.draw.rect(self.screen, self.black, self.cm_button_rect, 2) # Borde negro
+        self.screen.blit(self.cm_button_text, self.cm_button_text.get_rect(center=self.cm_button_rect.center))
+
+        pygame.draw.rect(self.screen, self.blue, self.in_button_rect)  # Fondo azul
+        pygame.draw.rect(self.screen, self.black, self.in_button_rect, 2) # Borde negro
+        self.screen.blit(self.in_button_text, self.in_button_text.get_rect(center=self.in_button_rect.center))
+
+        pygame.draw.rect(self.screen, self.blue, self.ft_button_rect)  # Fondo azul
+        pygame.draw.rect(self.screen, self.black, self.ft_button_rect, 2) # Borde negro
+        self.screen.blit(self.ft_button_text, self.ft_button_text.get_rect(center=self.ft_button_rect.center))
         if self.element_input_active: # Nuevo
             pygame.draw.rect(self.screen, self.blue, self.element_input_rect, 3) # Nuevo
         pygame.display.flip()
